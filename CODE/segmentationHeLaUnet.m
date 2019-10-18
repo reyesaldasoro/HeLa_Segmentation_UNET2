@@ -158,8 +158,8 @@ accuracy(3,9,3,4) = 0;
                 %%
                 net                 = trainNetwork(trainingData,layers,opts);
                %% 
-                nameNet             = strcat(dataSaveDir,'Network_Case_',num2str(currentCase),'_Enc_',nameEncoder,'_numL_',nameLayers,'_NumEpochs_',num2str(numEpochs));
-                disp(nameNet)
+               % nameNet             = strcat(dataSaveDir,'Network_Case_',num2str(currentCase),'_Enc_',nameEncoder,'_numL_',nameLayers,'_NumEpochs_',num2str(numEpochs));
+               % disp(nameNet)
                 %save(nameNet,'net')
                 %%
                 currentSlice        = 100;
@@ -169,7 +169,7 @@ accuracy(3,9,3,4) = 0;
                 %
                 C = semanticseg(currentData,net);
                 B = labeloverlay(currentData, C);
-                
+                imagesc(B)
                 %%
                 %figure
                 %imagesc(B)
