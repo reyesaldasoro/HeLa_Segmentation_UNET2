@@ -23,7 +23,7 @@ end
     labelDir                    = fullfile(dataSetDir,strcat('trainingLabels',filesep));
     %imageSize                   = [rows cols];
     encoderDepth                = 4;
-
+sizeTrainingPatch       = 64;
     % These are the data stores with the training pairs and training labels
     % They can be later used to create montages of the pairs.
     imds                        = imageDatastore(imageDir);
@@ -79,7 +79,7 @@ accuracy(3,9,3,4) = 0;
                 switch numLayersNetwork
                     case 1
                         layers = [
-                            imageInputLayer([32 32 1])
+                            imageInputLayer([sizeTrainingPatch sizeTrainingPatch 1])
                             convolution2dLayer(filterSize,numFilters,'Padding',1)
                             reluLayer()
                             maxPooling2dLayer(2,'Stride',2)
@@ -98,7 +98,7 @@ accuracy(3,9,3,4) = 0;
                         nameLayers     = '15';
                     case 2
                         layers = [
-                            imageInputLayer([32 32 1])
+                            imageInputLayer([sizeTrainingPatch sizeTrainingPatch 1])
                             convolution2dLayer(filterSize,numFilters,'Padding',1)
                             reluLayer()
                             maxPooling2dLayer(2,'Stride',2)
@@ -123,7 +123,7 @@ accuracy(3,9,3,4) = 0;
                         nameLayers     = '20';
                     case 3
                         layers = [
-                            imageInputLayer([32 32 1])
+                            imageInputLayer([sizeTrainingPatch sizeTrainingPatch 1])
                             convolution2dLayer(filterSize,numFilters,'Padding',1)
                             reluLayer()
                             maxPooling2dLayer(2,'Stride',2)
@@ -161,10 +161,16 @@ accuracy(3,9,3,4) = 0;
                 nameNet             = strcat(dataSaveDir,'Network_Case_',num2str(currentCase),'_Enc_',nameEncoder,'_numL_',nameLayers,'_NumEpochs_',num2str(numEpochs));
                 disp(nameNet)
                 %save(nameNet,'net')
-                
+                %%
+                currentSlice        = 100;
+                currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
+                currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
+
                 %
-                C = semanticseg(uint8(dataRanden{currentCase}),net);
-                %B = labeloverlay(uint8(dataRanden{currentCase}), C);
+                C = semanticseg(currentData,net);
+                B = labeloverlay(currentData, C);
+                
+                %%
                 %figure
                 %imagesc(B)
     [rows,cols]                 = size(dataRanden{currentCase});
