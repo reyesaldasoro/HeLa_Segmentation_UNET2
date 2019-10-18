@@ -9,14 +9,16 @@ clc
 if strcmp(filesep,'/')
     % Running in Mac
     %    load('/Users/ccr22/OneDrive - City, University of London/Acad/ARC_Grant/Datasets/DataARC_Datasets_2019_05_03.mat')
-    cd ('/Users/ccr22/Acad/GitHub/HeLa_UNET/CODE')
+    cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET/CODE')
     %    baseDir                             = 'Metrics_2019_04_25/metrics/';
 else
     % running in windows
-    cd ('D:\Acad\GitHub\HeLa_UNET\CODE')
+    cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
 end
 %%
-for currentSlice        = 124:2:130
+sizeTrainingPatch       = 64;
+for currentSlice        = 100:2:180
+    disp(currentSlice)
     
     % read a slice and its hand-segmented boundary
     currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
@@ -43,9 +45,9 @@ for currentSlice        = 124:2:130
     % Iterate over the random points and save
     for cTrainReg = 1:numel(indexRand)
         % Generate the training data and labels
-        
-        trainingRegionRows  = r(indexRand(cTrainReg))-15:r(indexRand(cTrainReg))+16;
-        trainingRegionCols  = c(indexRand(cTrainReg))-15:c(indexRand(cTrainReg))+16;
+        try
+        trainingRegionRows  = r(indexRand(cTrainReg))-(sizeTrainingPatch/2)+1:r(indexRand(cTrainReg))+sizeTrainingPatch/2;
+        trainingRegionCols  = c(indexRand(cTrainReg))-(sizeTrainingPatch/2)+1:c(indexRand(cTrainReg))+sizeTrainingPatch/2;
         currentLabel        = uint8(currentRegions(trainingRegionRows,trainingRegionCols));
         currentSection      = currentData(trainingRegionRows,trainingRegionCols);
         % Save training data and labels
@@ -53,7 +55,8 @@ for currentSlice        = 124:2:130
         fNameL              = strcat('Hela_Label_Slice',num2str(currentSlice),'_Sample_',num2str(cTrainReg),'.png');
         imwrite(currentSection,strcat('trainingImages',filesep,fName))
         imwrite(currentLabel,strcat('trainingLabels',filesep,fNameL))
-        
+        catch
+        end
         %
     end
 end
