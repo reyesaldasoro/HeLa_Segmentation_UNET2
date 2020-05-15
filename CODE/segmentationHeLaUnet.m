@@ -45,7 +45,7 @@ end
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
 labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
-for numEpochsName=1 :4
+for numEpochsName=1 %:4
     switch numEpochsName
         case 1
             numEpochs       = 10;
@@ -58,7 +58,7 @@ for numEpochsName=1 :4
     end
     
     % try with different encoders
-    for caseEncoder =1:3
+    for caseEncoder =1%:3
         switch caseEncoder
             case 1
                 typeEncoder     = 'sgdm';
@@ -75,7 +75,7 @@ for numEpochsName=1 :4
         numFilters                  = 64;
         filterSize                  = 3;
         
-        for numLayersNetwork =1:3
+        for numLayersNetwork =3%1:3
             switch numLayersNetwork
                 case 1
                     layers = [
@@ -129,23 +129,13 @@ for numEpochsName=1 :4
                         maxPooling2dLayer(2,'Stride',2)
                         convolution2dLayer(filterSize,numFilters,'Padding',1)
                         reluLayer()
-                        maxPooling2dLayer(2,'Stride',2)
-                        convolution2dLayer(filterSize,numFilters,'Padding',1)
-                        reluLayer()
-                        maxPooling2dLayer(2,'Stride',2)
-                        convolution2dLayer(filterSize,numFilters,'Padding',1)
-                        reluLayer()
-                        transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1);
-                        convolution2dLayer(1,numClasses);
-                        transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1);
-                        convolution2dLayer(1,numClasses);
                         transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1);
                         convolution2dLayer(1,numClasses);
                         softmaxLayer()
                         pixelClassificationLayer()
                         ];
                     
-                    nameLayers     = '20B';
+                    nameLayers     = '10';
             end
             %
             
@@ -186,6 +176,10 @@ for numEpochsName=1 :4
             %imagesc(result==maskRanden{currentCase})
             accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
             %save(strcat(dataSaveDir,'accuracy'),'accuracy')
+            disp('----------------------------------------------')
+            disp([numEpochsName caseEncoder numLayersNetwork])
+            disp('----------------------------------------------')
+
         end
     end
 end
