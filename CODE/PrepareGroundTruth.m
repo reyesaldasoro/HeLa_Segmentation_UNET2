@@ -17,11 +17,11 @@ else
 end
 %%
 sizeTrainingPatch       = 64;
-for currentSlice        = 10:99
+for currentSlice        = 100:199
     disp(currentSlice)
     % read a slice and its hand-segmented boundary
-    currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z00',num2str(currentSlice),'.tiff'));
-    currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z00',num2str(currentSlice),'.tif'));
+    currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
+    currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
     % Calculate the envelope and its centreline
     nuclearEnvelope     = imdilate(currentSeg>0,ones(12));
     nuclearEnvelopeLin  = bwmorph(nuclearEnvelope,'thin','inf');
