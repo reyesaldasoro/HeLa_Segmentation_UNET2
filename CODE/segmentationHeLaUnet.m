@@ -175,7 +175,9 @@ for numEpochsName=1 %:4
             %figure(10*counterOptions+currentCase)
             %imagesc(result==maskRanden{currentCase})
             accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
-            %save(strcat(dataSaveDir,'accuracy'),'accuracy')
+            jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==3).*(result==3) )) / sum(sum ( ((groundTruth==3)|(result==3)) ));
+            timeSaved= datevec(date);
+            save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3))),'accuracy','jaccard')
             disp('----------------------------------------------')
             disp([numEpochsName caseEncoder numLayersNetwork])
             disp('----------------------------------------------')
