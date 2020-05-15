@@ -28,7 +28,7 @@ for currentSlice        = 100:199
     % Create an index of random points along the nuclear envelope
     [r,c]               = find(nuclearEnvelopeLin);
     numPoints           = numel(r);
-    numRandom           = round(numPoints/50);
+    numRandom           = round(numPoints/10);
     indexRand           = sort(1+round(numPoints*rand(numRandom,1)));
     % Create the classes to be used for training
     currentRegions      = bwlabel(nuclearEnvelope==0);
