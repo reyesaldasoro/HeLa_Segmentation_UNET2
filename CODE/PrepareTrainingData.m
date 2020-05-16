@@ -17,19 +17,20 @@ else
 end
 %%
 sizeTrainingPatch       = 64;
-for currentSlice        = 100:2:180
+for currentSlice        = 101:2:180
     disp(currentSlice)
     
     % read a slice and its hand-segmented boundary
     currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
     % Calculate the envelope and its centreline
+    currentData         = imfilter(currentData,[ 0.0625    0.1250    0.0625; 0.1250    0.2500    0.1250; 0.0625    0.1250    0.0625]);
     nuclearEnvelope     = imdilate(currentSeg>0,ones(12));
     nuclearEnvelopeLin  = bwmorph(nuclearEnvelope,'thin','inf');
     % Create an index of random points along the nuclear envelope
     [r,c]               = find(nuclearEnvelopeLin);
     numPoints           = numel(r);
-    numRandom           = round(numPoints/50);
+    numRandom           = round(numPoints/10);
     indexRand           = sort(1+round(numPoints*rand(numRandom,1)));
     % Create the classes to be used for training
     currentRegions      = bwlabel(nuclearEnvelope==0);
