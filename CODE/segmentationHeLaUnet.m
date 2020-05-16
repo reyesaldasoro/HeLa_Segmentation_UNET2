@@ -3,6 +3,9 @@ clear all
 close all
 clc
 
+%% accuracy_2020_5_15
+% Running with 2,300 samples   64x64 patches without LPF, 
+
 %% Read the files that have been stored in the current folder
 if strcmp(filesep,'/')
     % Running in Mac
@@ -30,6 +33,8 @@ imds                        = imageDatastore(imageDir);
 imds2                       = imageDatastore(labelDir);
 
 accuracy(3,3,4) = 0;
+jaccard(3,3,4) = 0;
+
 %% Loop for training and segmentation
 % select one of the composite images of the randen cases, there are 9 images
 % dimensions of the data
@@ -45,7 +50,7 @@ end
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
 labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
-for numEpochsName=1 %:4
+for numEpochsName=1:4
     switch numEpochsName
         case 1
             numEpochs       = 10;
@@ -58,7 +63,7 @@ for numEpochsName=1 %:4
     end
     
     % try with different encoders
-    for caseEncoder =1%:3
+    for caseEncoder =1:3
         switch caseEncoder
             case 1
                 typeEncoder     = 'sgdm';
@@ -75,7 +80,7 @@ for numEpochsName=1 %:4
         numFilters                  = 64;
         filterSize                  = 3;
         
-        for numLayersNetwork =3%1:3
+        for numLayersNetwork =1:3
             switch numLayersNetwork
                 case 1
                     layers = [
@@ -177,7 +182,7 @@ for numEpochsName=1 %:4
             accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
             jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==3).*(result==3) )) / sum(sum ( ((groundTruth==3)|(result==3)) ));
             timeSaved= datevec(date);
-            save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3))),'accuracy','jaccard')
+            save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'64x64_raw_LPF_13742'),'accuracy','jaccard')
             disp('----------------------------------------------')
             disp([numEpochsName caseEncoder numLayersNetwork])
             disp('----------------------------------------------')
