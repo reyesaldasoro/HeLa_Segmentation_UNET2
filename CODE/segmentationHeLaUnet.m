@@ -5,6 +5,8 @@ clc
 
 %% accuracy_2020_5_15
 % Running with 2,300 samples   64x64 patches without LPF, 
+%% accuracy_2020_5_16
+% Running with 13,300 samples   64x64 patches without/with LPF, 
 
 %% Read the files that have been stored in the current folder
 if strcmp(filesep,'/')
