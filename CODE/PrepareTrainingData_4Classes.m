@@ -64,9 +64,9 @@ for currentSlice        = 101:2:180
     
     % Strategy 2
     % Iterate over the the whole region and save
-    for counterR = 1:rows-sizeTrainingPatch
+    for counterR = 1:sizeTrainingPatch:rows-sizeTrainingPatch
         trainingRegionRows  = counterR:counterR+sizeTrainingPatch-1 ;
-        for counterC = 1:cols-sizeTrainingPatch
+        for counterC = 1:sizeTrainingPatch:cols-sizeTrainingPatch
             trainingRegionCols  = counterC:counterC+sizeTrainingPatch-1 ;
             
             % Generate the training data and labels
