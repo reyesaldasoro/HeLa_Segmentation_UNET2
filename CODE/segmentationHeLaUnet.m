@@ -43,6 +43,11 @@ imds2                       = imageDatastore(labelDir);
 accuracy(3,3,4) = 0;
 jaccard(3,3,4) = 0;
 
+baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
+
+
+
 %% Loop for training and segmentation
 % select one of the composite images of the randen cases, there are 9 images
 % dimensions of the data
@@ -58,20 +63,20 @@ end
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
 labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
-for numEpochsName=1%:3%4
+for numEpochsName=1:4
     switch numEpochsName
         case 1
-            numEpochs       = 10;
+            numEpochs       = 5;%10;
         case 2
-            numEpochs       = 20;
+            numEpochs       = 10;%20;
         case 3
-            numEpochs       = 50;
+            numEpochs       = 15;%50;
         case 4
-            numEpochs       = 100;
+            numEpochs       = 20;%100;
     end
     
     % try with different encoders
-    for caseEncoder =1%:3
+    for caseEncoder =1:3
         switch caseEncoder
             case 1
                 typeEncoder     = 'sgdm';
@@ -88,7 +93,7 @@ for numEpochsName=1%:3%4
         numFilters                  = 64;
         filterSize                  = 3;
         
-        for numLayersNetwork =1%:3
+        for numLayersNetwork =1:3
             switch numLayersNetwork
                 case 1
                     layers = [
@@ -167,13 +172,17 @@ for numEpochsName=1%:3%4
             %
             currentSlice        = 100;
             currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
-            currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
+            %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
             currentGT           = load (strcat(GTDir,'GT_Slice_',num2str(currentSlice)));
             groundTruth         = currentGT.groundTruth;
-            C                   = semanticseg(currentData,net);
-            B                   = labeloverlay(currentData, C);
-            imagesc(B)
-            %
+            
+            
+            currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
+            groundTruth         = currentSeg.groundTruth;
+            
+            
+            C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
+            %B                   = labeloverlay(currentData, C);
             %figure
             %imagesc(B)
             [rows,cols]          = size(currentData);
@@ -188,13 +197,13 @@ for numEpochsName=1%:3%4
             %figure(10*counterOptions+currentCase)
             %imagesc(result==maskRanden{currentCase})
             accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
-            jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==3).*(result==3) )) / sum(sum ( ((groundTruth==3)|(result==3)) ));
+            jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
             timeSaved= datevec(date);
             save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'64x64_raw_LPF_13742'),'accuracy','jaccard')
             disp('----------------------------------------------')
             disp([numEpochsName caseEncoder numLayersNetwork])
             disp('----------------------------------------------')
-
+            disp(accuracy)
         end
     end
 end
