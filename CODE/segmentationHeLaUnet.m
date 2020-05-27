@@ -55,7 +55,7 @@ end
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
 labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
-for numEpochsName=1:3%4
+for numEpochsName=1%:3%4
     switch numEpochsName
         case 1
             numEpochs       = 10;
@@ -68,7 +68,7 @@ for numEpochsName=1:3%4
     end
     
     % try with different encoders
-    for caseEncoder =1:3
+    for caseEncoder =1%:3
         switch caseEncoder
             case 1
                 typeEncoder     = 'sgdm';
@@ -85,7 +85,7 @@ for numEpochsName=1:3%4
         numFilters                  = 64;
         filterSize                  = 3;
         
-        for numLayersNetwork =1:3
+        for numLayersNetwork =1%:3
             switch numLayersNetwork
                 case 1
                     layers = [
