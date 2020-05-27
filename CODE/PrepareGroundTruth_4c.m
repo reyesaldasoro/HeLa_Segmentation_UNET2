@@ -35,10 +35,23 @@ for currentSlice        = 1:numSlices
     % Calculate the background, i.e. all that is not cell
     [Hela_background,Background_intensity,Hela_intensity,Hela_output]           = segmentBackgroundHelaEM(currentData);
     
+    % Numbers, ensure 001, 002, etc
+    if currentSlice<10
+        numSlice            = strcat('00',num2str(currentSlice));
+    elseif currentSlice<100
+        numSlice            = strcat('0',num2str(currentSlice));
+    else
+        numSlice            = num2str(currentSlice);
+    end
+    
+    
     if max(currentSeg(:))==0
         % There is no manual segmentation, i.e. no nucleus, only distinguish between cell and background
         groundTruth =  4 * (Hela_background) + 3*(1-Hela_background);
-        dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',num2str(currentSlice));
+        %dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',num2str(currentSlice));
+        dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',numSlice);
+        
+        
         save(dataOut,'groundTruth')
     else
         % Calculate the envelope and its centreline       
@@ -64,16 +77,7 @@ for currentSlice        = 1:numSlices
         
         currentRegions(currentRegions>4)    = 4;
         groundTruth = currentRegions;
-        
-        % Numbers, ensure 001, 002, etc
-            if currentSlice<10
-                numSlice            = strcat('00',num2str(currentSlice));
-            elseif currentSlice<100
-                numSlice            = strcat('0',num2str(currentSlice));
-            else
-                numSlice            = num2str(currentSlice);
-            end
-
+       
         dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',numSlice);
         
         save(dataOut,'groundTruth')
