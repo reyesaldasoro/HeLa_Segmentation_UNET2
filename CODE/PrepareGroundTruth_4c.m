@@ -26,28 +26,23 @@ currentData             = imread(strcat(baseDirData,dirData(1).name));
 [rows,cols]             = size(currentData);
 %%
 for currentSlice        = 1:numSlices
+    disp(currentSlice)
     
     % read a slice and its hand-segmented boundary
     currentSeg          = imread(strcat(baseDirSeg,dirSeg(currentSlice).name));
-    % only read the slice and proceed IF There is manual segmentation
+    currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
+    currentData         = imfilter(currentData,[ 0.0625    0.1250    0.0625; 0.1250    0.2500    0.1250; 0.0625    0.1250    0.0625],'replicate');
+    % Calculate the background, i.e. all that is not cell
+    [Hela_background,Background_intensity,Hela_intensity,Hela_output]           = segmentBackgroundHelaEM(currentData);
     
     if max(currentSeg(:))==0
-        disp(currentSlice)
-        
-        groundTruth = 4*ones(rows,cols);
-                dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',num2str(currentSlice));
-                save(dataOut,'groundTruth')
+        % There is no manual segmentation, i.e. no nucleus, only distinguish between cell and background
+        groundTruth =  4 * (Hela_background) + 3*(1-Hela_background);
+        dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',num2str(currentSlice));
+        save(dataOut,'groundTruth')
     else
-        disp(currentSlice)
-        % read a slice and its hand-segmented boundary
-        currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
-        
-        % Calculate the envelope and its centreline
-        currentData         = imfilter(currentData,[ 0.0625    0.1250    0.0625; 0.1250    0.2500    0.1250; 0.0625    0.1250    0.0625],'replicate');
-        
-        [rows,cols]         = size(currentData);
-        
-        [Hela_background,Background_intensity,Hela_intensity,Hela_output]           = segmentBackgroundHelaEM(currentData);
+        % Calculate the envelope and its centreline       
+        %[rows,cols]         = size(currentData);
         nuclearEnvelope     = imdilate(currentSeg>0,ones(4));
         nuclearEnvelopeLin  = bwmorph(nuclearEnvelope,'thin','inf');
         % Create the classes to be used for training
@@ -71,6 +66,6 @@ for currentSlice        = 1:numSlices
         groundTruth = currentRegions;
         dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',num2str(currentSlice));
         
-                        save(dataOut,'groundTruth')
+        save(dataOut,'groundTruth')
     end
 end
