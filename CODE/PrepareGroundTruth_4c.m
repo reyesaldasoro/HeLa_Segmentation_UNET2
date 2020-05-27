@@ -49,8 +49,8 @@ for currentSlice        = 1:numSlices
         % This is for Nucleus/Nuclear Envelope/Else
         currentRegions1      = bwlabel(nuclearEnvelope==0);
         % This is for Nucleus/Nuclear Envelope/Cell/Background
-        currentRegions      = 1 * (nuclearEnvelope==1)+...                      % NE
-            2 * (currentRegions1>1  )+...                    % nucleus
+        currentRegions      = 1 * (nuclearEnvelope==1)+...    % NE
+            2 * (currentRegions1>1  )+...                     % nucleus
             3 * ((currentRegions1==1)-Hela_background)+...    % cell
             4 * (Hela_background );                           % background
         
@@ -64,7 +64,17 @@ for currentSlice        = 1:numSlices
         
         currentRegions(currentRegions>4)    = 4;
         groundTruth = currentRegions;
-        dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',num2str(currentSlice));
+        
+        % Numbers, ensure 001, 002, etc
+            if currentSlice<10
+                numSlice            = strcat('00',num2str(currentSlice));
+            elseif currentSlice<100
+                numSlice            = strcat('0',num2str(currentSlice));
+            else
+                numSlice            = num2str(currentSlice);
+            end
+
+        dataOut = strcat('GroundTruth_4c',filesep,'GT_Slice_',numSlice);
         
         save(dataOut,'groundTruth')
     end
