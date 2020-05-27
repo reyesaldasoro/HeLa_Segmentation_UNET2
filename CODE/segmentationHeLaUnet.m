@@ -7,6 +7,9 @@ clc
 % Running with 2,300 samples   64x64 patches without LPF, 
 %% accuracy_2020_5_16
 % Running with 13,300 samples   64x64 patches without/with LPF, 
+%% accuracy_2020_5_20
+% Running with 38,440 samples   64x64 patches with LPF and four classes 
+
 
 %% Read the files that have been stored in the current folder
 if strcmp(filesep,'/')
@@ -24,8 +27,8 @@ end
 %%
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
-imageDir                    = fullfile(dataSetDir,strcat('trainingImages',filesep));
-labelDir                    = fullfile(dataSetDir,strcat('trainingLabels',filesep));
+imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
+labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
 %imageSize                   = [rows cols];
 encoderDepth                = 4;
 sizeTrainingPatch       = 64;
@@ -40,7 +43,7 @@ jaccard(3,3,4) = 0;
 %% Loop for training and segmentation
 % select one of the composite images of the randen cases, there are 9 images
 % dimensions of the data
-numClasses                  = 3;
+numClasses                  = 4 ;
 
 % The class names are a sequence of options for the textures, e.g.
 % classNames = ["T1","T2","T3","T4","T5"];
@@ -52,7 +55,7 @@ end
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
 labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
-for numEpochsName=1:4
+for numEpochsName=1:3%4
     switch numEpochsName
         case 1
             numEpochs       = 10;
