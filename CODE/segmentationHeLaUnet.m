@@ -9,6 +9,9 @@ clc
 % Running with 13,300 samples   64x64 patches without/with LPF, 
 %% accuracy_2020_5_20
 % Running with 38,440 samples   64x64 patches with LPF and four classes 
+%% accuracy_2020_5_27
+% Running with 19,220 samples   64x64 patches with LPF and four classes 
+% After re-arranging GT and file names
 
 
 %% Read the files that have been stored in the current folder
