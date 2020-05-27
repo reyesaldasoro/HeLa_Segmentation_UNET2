@@ -31,7 +31,7 @@ dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
     currentData         = imread(strcat(baseDirData,dirData(1).name));
   [rows,cols]         = size(currentData);
 
-%%
+ %%
 sizeTrainingPatch       = 64;
 for currentSlice        = 101:4:180
     disp(currentSlice)
