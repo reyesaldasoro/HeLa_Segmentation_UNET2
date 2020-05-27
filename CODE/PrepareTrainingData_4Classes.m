@@ -22,25 +22,25 @@ baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTrut
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
 dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
 
-% The order in which the GT is read is 1, 10, 100, 2, 20 ... thus it has to be sorted
-% In the future it would be better to save GT_001, GT_002 instead GT_1 GT_2
-for k=1:300
-    posIndex(k,1)=str2num(dirSeg(k).name(10:end-4));
-end
-[~,realIndex]=sort(posIndex);
+% % The order in which the GT is read is 1, 10, 100, 2, 20 ... thus it has to be sorted
+% % In the future it would be better to save GT_001, GT_002 instead GT_1 GT_2
+% for k=1:300
+%     posIndex(k,1)=str2num(dirSeg(k).name(10:end-4));
+% end
+% [~,realIndex]=sort(posIndex);
     currentData         = imread(strcat(baseDirData,dirData(1).name));
- [rows,cols]         = size(currentData);
+  [rows,cols]         = size(currentData);
 
 %%
 sizeTrainingPatch       = 64;
-for currentSlice        = 101:2:180
+for currentSlice        = 101:4:180
     disp(currentSlice)
     
     % read a slice and its hand-segmented boundary
     %currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
-    currentSeg          = load(strcat(baseDirSeg,dirSeg(realIndex(currentSlice)).name));
+    currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
     currentRegions      = currentSeg.groundTruth;
     % Calculate the envelope and its centreline
     currentData         = imfilter(currentData,[ 0.0625    0.1250    0.0625; 0.1250    0.2500    0.1250; 0.0625    0.1250    0.0625],'replicate');
