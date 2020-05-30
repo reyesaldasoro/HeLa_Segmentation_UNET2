@@ -12,6 +12,11 @@ clc
 %% accuracy_2020_5_27
 % Running with 19,220 samples   64x64 patches with LPF and four classes 
 % After re-arranging GT and file names
+%% accuracy_2020_5_28
+% Running with 36,000 samples   128x128 patches with LPF and four classes 
+% After re-arranging GT and file names
+
+
 
 
 %% Read the files that have been stored in the current folder
@@ -30,11 +35,11 @@ end
 %%
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
-imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
-labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
+imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
+labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
 %imageSize                   = [rows cols];
 encoderDepth                = 4;
-sizeTrainingPatch       = 64;
+sizeTrainingPatch       = 128;
 % These are the data stores with the training pairs and training labels
 % They can be later used to create montages of the pairs.
 imds                        = imageDatastore(imageDir);
@@ -63,7 +68,7 @@ end
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
 labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
-for numEpochsName=1:4
+for numEpochsName=3  %1:4
     switch numEpochsName
         case 1
             numEpochs       = 5;%10;
@@ -76,7 +81,7 @@ for numEpochsName=1:4
     end
     
     % try with different encoders
-    for caseEncoder =1:3
+    for caseEncoder = 2:3 %  1:3
         switch caseEncoder
             case 1
                 typeEncoder     = 'sgdm';
@@ -93,7 +98,7 @@ for numEpochsName=1:4
         numFilters                  = 64;
         filterSize                  = 3;
         
-        for numLayersNetwork =1:3
+        for numLayersNetwork =2 %  1:3
             switch numLayersNetwork
                 case 1
                     layers = [
@@ -199,7 +204,7 @@ for numEpochsName=1:4
             accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
             jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
             timeSaved= datevec(date);
-            save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'64x64_raw_LPF_13742'),'accuracy','jaccard')
+            save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')
             disp('----------------------------------------------')
             disp([numEpochsName caseEncoder numLayersNetwork])
             disp('----------------------------------------------')
