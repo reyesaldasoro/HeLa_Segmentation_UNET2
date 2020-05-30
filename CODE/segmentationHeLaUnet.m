@@ -216,4 +216,32 @@ end
 
 misclassification = 100*(1-accuracy);
 
+%% Run segmentation in all slices
 
+baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
+dirData                 = dir(strcat(baseDirData,'*.tiff'));
+
+%%
+for  currentSlice        = 118% 1:300
+    disp(currentSlice)
+            currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
+            %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
+            
+            currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
+            groundTruth         = currentSeg.groundTruth;
+            
+            
+            C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
+            
+            % Convert from semantic to numeric
+            result               = zeros(rows,cols);
+            for counterClass=1:numClasses
+                %strcat('T',num2str(counterClass))
+                %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
+                result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
+            end
+            %figure(10*counterOptions+currentCase)
+            %imagesc(result==maskRanden{currentCase})
+            accuracy2(currentSlice)=sum(sum(result==groundTruth))/rows/cols;
+            jaccard2(currentSlice) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
+end
