@@ -222,7 +222,7 @@ baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTur
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
 
 %%
-for  currentSlice        = 118% 1:300
+for  currentSlice        = 260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
             %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
@@ -245,3 +245,13 @@ for  currentSlice        = 118% 1:300
             accuracy2(currentSlice)=sum(sum(result==groundTruth))/rows/cols;
             jaccard2(currentSlice) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
 end
+
+%%
+figure
+resultRGB        = zeros(rows,cols,3);
+resultRGB(:,:,1) = imfilter(currentData,gaussF(3,3,1),'replicate');
+resultRGB(:,:,2) = resultRGB(:,:,1).*(result~=2)+0.5*resultRGB(:,:,1).*(result==2);
+resultRGB(:,:,3) = resultRGB(:,:,1);
+
+
+imagesc(resultRGB/255)
