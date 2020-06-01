@@ -81,6 +81,7 @@ for currentSlice        = 101:2:180
     
     % Strategy 2
     % Iterate over the the whole region and save
+    k=1;
     for counterR = 1:sizeTrainingPatch/2:rows-sizeTrainingPatch
         trainingRegionRows  = counterR:counterR+sizeTrainingPatch-1 ;
         for counterC = 1:sizeTrainingPatch/2:cols-sizeTrainingPatch
@@ -121,9 +122,33 @@ for currentSlice        = 101:2:180
             %fNameL              = strcat('Hela_Label_Slice',num2str(currentSlice),'_Sample_',num2str(counterR),'_',num2str(counterC),'.png');
             fName               = strcat('Hela_Data_Slice_',numSlice,'_Sample_',numcounterR,'_',numcounterC,'.png');
             fNameL              = strcat('Hela_Label_Slice',numSlice,'_Sample_',numcounterR,'_',numcounterC,'.png');
-            imwrite(currentSection,strcat('trainingImages_4c_128',filesep,fName))
-            imwrite(currentLabel,strcat('trainingLabels_4c_128',filesep,fNameL))
+            %imwrite(currentSection,strcat('trainingImages_4c_128',filesep,fName))
+            %imwrite(currentLabel,strcat('trainingLabels_4c_128',filesep,fNameL))
+            
+            a(:,:,k)=currentSection;
+            b(:,:,k)=currentLabel;
+            k=k+1;
         end
         %
     end
 end
+
+
+%% Prepare figure
+
+
+
+h0=figure;
+h1=subplot(121);
+montage(a(:,:,451:606))
+title('(a)','fontsize',20)
+h2=subplot(122);
+montage(b(:,:,451:606))
+caxis([1 4])
+title('(b)','fontsize',20)
+%%
+ h0.Position= [119   508   1008   476];
+ h1.Position=[0.03 0.02 0.46 0.91];
+ h2.Position=[0.53 0.02 0.46 0.91];
+filename='montage_Unet_Hela_Data_label.png';
+print('-dpng','-r500',filename)
