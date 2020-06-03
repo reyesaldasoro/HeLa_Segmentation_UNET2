@@ -100,6 +100,23 @@ h12.Position = [ 0.34    0.12    0.32    0.87];
 h13.Position = [ 0.67    0.12    0.32    0.87];
 
  
- 
- 
- 
+%%
+figure(2)
+imagesc(resultRGB(:,:,:,1)/255)
+axis off
+set(gca,'Position',[0 0 1 1]);
+filename='Three_Unet_Hela_Results_1.png';
+print('-dpng','-r500',filename)
+
+imagesc(resultRGB(:,:,:,2)/255)
+axis off
+set(gca,'Position',[0 0 1 1]);
+filename='Three_Unet_Hela_Results_2.png';
+print('-dpng','-r500',filename)
+
+
+imagesc(resultRGB(:,:,:,3)/255)
+axis off
+set(gca,'Position',[0 0 1 1]);
+filename='Three_Unet_Hela_Results_3.png';
+print('-dpng','-r500',filename)
