@@ -202,7 +202,7 @@ for numEpochsName=3  %1:4
             C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
             C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
             C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
-            C=[C1 C2; C3 c4];
+            C=[C1 C2; C3 C4];
             
             %B                   = labeloverlay(currentData, C);
             %figure
