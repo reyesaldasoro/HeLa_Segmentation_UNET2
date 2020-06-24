@@ -37,9 +37,19 @@ end
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
 imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
 labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
+sizeTrainingPatch       = 128;
+
+%imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
+%labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
+%sizeTrainingPatch       = 64;
+
 %imageSize                   = [rows cols];
 encoderDepth                = 4;
-sizeTrainingPatch       = 128;
+
+
+
+
+
 % These are the data stores with the training pairs and training labels
 % They can be later used to create montages of the pairs.
 imds                        = imageDatastore(imageDir);
@@ -81,7 +91,7 @@ for numEpochsName=3  %1:4
     end
     
     % try with different encoders
-    for caseEncoder = 2:3 %  1:3
+    for caseEncoder = 2 %  1:3
         switch caseEncoder
             case 1
                 typeEncoder     = 'sgdm';
@@ -186,7 +196,14 @@ for numEpochsName=3  %1:4
             groundTruth         = currentSeg.groundTruth;
             
             
-            C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
+            %C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
+                       
+            C1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
+            C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
+            C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
+            C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
+            C=[C1 C2; C3 c4];
+            
             %B                   = labeloverlay(currentData, C);
             %figure
             %imagesc(B)
@@ -204,7 +221,7 @@ for numEpochsName=3  %1:4
             accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
             jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
             timeSaved= datevec(date);
-            save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')
+            %save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')
             disp('----------------------------------------------')
             disp([numEpochsName caseEncoder numLayersNetwork])
             disp('----------------------------------------------')
