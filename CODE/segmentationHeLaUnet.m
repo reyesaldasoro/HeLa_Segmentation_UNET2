@@ -233,7 +233,7 @@ end
 
 misclassification = 100*(1-accuracy);
 
-%% Run segmentation in all slices
+ %% Run segmentation in all slices
 
 baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
