@@ -10,11 +10,26 @@ if strcmp(filesep,'/')
     cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET/CODE')
     %    baseDir                             = 'Metrics_2019_04_25/metrics/';
 else
-    % running in windows
-    cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
-    dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
-    dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
-    GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
+    % running in windows 
+    try
+        % old HP
+        cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
+        dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
+        dataSetDir  = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
+        GTDir       = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
+        baseDirSeg  = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+        baseDirData = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
+    catch
+        %New Alienware
+        baseDir = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET\CODE';
+        baseDirSeg  = strcat(baseDir,filesep,'GroundTruth_4c\');
+        cd (baseDir);
+        dataSaveDir = strcat(baseDir,filesep,'Results',filesep);
+        dataSetDir  = strcat(baseDir,filesep);
+        GTDir       = strcat(baseDir,filesep,'GroundTruth\');
+        baseDirData = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROIS\ROI_1656-6756-329\';
+       
+    end
 end
 %%
  load('UNet_128x128_Hela.mat')
@@ -23,9 +38,8 @@ end
   cols = 2000;
   
 
-baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+
 dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
-baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
 
 
@@ -35,14 +49,15 @@ slicesToSegment = [170 220 260];
 for slicesT = 1:3 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
-            currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
+            currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
             %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
             
             currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
             groundTruth         = currentSeg.groundTruth;
             
             
-            C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
+            C                   = semanticseg(imfilter(currentData,fspecial('Gaussian',3,1),'replicate'),net);
+     %       C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
             
             % Convert from semantic to numeric
             result               = zeros(rows,cols);
@@ -62,16 +77,18 @@ end
 resultRGB        = zeros(rows,cols,3,3);
 for slicesT = 1:3 
      currentSlice        = slicesToSegment(slicesT); %260% 1:300
-   
-     currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
+     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
            
-resultRGB(:,:,1,slicesT) = imfilter(currentData,gaussF(3,3,1),'replicate');
-resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=2)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==2);
-resultRGB(:,:,3,slicesT) = resultRGB(:,:,1,slicesT);
+     %currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
+           
+    resultRGB(:,:,1,slicesT) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
+     %resultRGB(:,:,1,slicesT) = imfilter(currentData,gaussF(3,3,1),'replicate');
+    resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=2)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==2);
+    resultRGB(:,:,3,slicesT) = resultRGB(:,:,1,slicesT);
 end
 %%
 h0 =figure;
-h0.Position =[ 95         558        1145          420];
+h0.Position =[ 95         158        1145          420];
 %%
 h11=subplot(131);
 imagesc(resultRGB(:,:,:,1)/255)
