@@ -26,11 +26,21 @@ if strcmp(filesep,'/')
     cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET/CODE')
     %    baseDir                             = 'Metrics_2019_04_25/metrics/';
 else
-    % running in windows
-    cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
-    dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
-    dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
-    GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
+%     % running in windows HP
+%     cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
+%     dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
+%     dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
+%     GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
+    
+    % running in windows Alienware
+    baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET\';
+    cd (strcat(baseDir,'CODE'))
+    dataSaveDir = strcat(baseDir,'CODE\Results\');
+    dataSetDir  = strcat(baseDir,'CODE\');
+    GTDir       = strcat(baseDir,'CODE\GroundTruth\');
+    
+    dir_8000    = 'C:\Users\sbbk034\Documents\Acad\Crick\Hela8000_tiff\';
+
 end
 %%
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
@@ -47,7 +57,7 @@ sizeTrainingPatch       = 128;
 encoderDepth                = 4;
 
 
-
+%%
 
 
 % These are the data stores with the training pairs and training labels
