@@ -31,6 +31,7 @@ else
 %     dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
 %     dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
 %     GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
+%     baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
     
     % running in windows Alienware
     baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET\';
@@ -38,8 +39,10 @@ else
     dataSaveDir = strcat(baseDir,'CODE\Results\');
     dataSetDir  = strcat(baseDir,'CODE\');
     GTDir       = strcat(baseDir,'CODE\GroundTruth\');
+    baseDirSeg  = strcat(baseDir,'CODE\GroundTruth_4c\');
     
     dir_8000    = 'C:\Users\sbbk034\Documents\Acad\Crick\Hela8000_tiff\';
+    dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
 
 end
 %%
@@ -47,11 +50,11 @@ end
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
 imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
 labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
-sizeTrainingPatch       = 128;
+sizeTrainingPatch           = 128;
 
-%imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
-%labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
-%sizeTrainingPatch       = 64;
+%imageDir                   = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
+%labelDir                   = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
+%sizeTrainingPatch          = 64;
 
 %imageSize                   = [rows cols];
 encoderDepth                = 4;
@@ -68,8 +71,6 @@ imds2                       = imageDatastore(labelDir);
 accuracy(3,3,4) = 0;
 jaccard(3,3,4) = 0;
 
-baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
-dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
 
 
 
