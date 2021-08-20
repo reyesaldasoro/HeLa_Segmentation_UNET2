@@ -6,7 +6,7 @@ dirGT   = dir(strcat(baseDir_GT,'*.mat'));
 
 scrsz=get(0,'screensize');
 %%
-k=294;
+k=149;
 k1=min(k+10,300);
 k2=max(k-10,1);
 currData    = imfilter(imread(strcat(baseDir_HelaCell,dirHela(k).name)),fspecial('Gaussian',3,1));
@@ -42,7 +42,7 @@ h31.Position=[0 0 1 1];
 groundTruth2=groundTruth;
 %groundTruth3=groundTruth;
 %%
-currAdd     = 1;
+
 figure(1)
 addRegion   = roipoly();
 %groundTruth2=groundTruth2-currAdd*(addRegion);
@@ -53,4 +53,7 @@ currClasses(:,:,3) = currData+uint8(groundTruth2==3)*60;
 currClasses(currClasses>255)=255;
 imagesc(currClasses)
 %%
-currAdd = currAdd+1;
+
+groundTruth = groundTruth2;
+filename    = strcat('GroundTruth_multiNuclei',filesep,'GT_Slice_',num2str(k,'%03d'),'.mat');
+save(filename,'groundTruth');
