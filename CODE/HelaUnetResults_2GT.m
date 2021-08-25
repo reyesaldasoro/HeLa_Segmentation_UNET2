@@ -100,12 +100,44 @@ end
 h0 =figure;
 h0.Position =[ 95         158        1145          420];
 %%
+figure(1)
 h11=subplot(121);
-plot(1:300, accuracy1, 1:300, accuracy2)
-h12=subplot(122);
-plot(1:300,jaccard1,1:300,jaccard2)
+hp1=plot(1:300, accuracy1, 1:300, accuracy2,'linewidth',2);
+ hp1(2).Color='r';
+  hp1(1).Color=[0 0.56448 1];
+  h11.XTick =20:35:266;
+  h11.YTick =0.84:0.04:1;
+h11.YLim=[0.84 1]; h11.XLim=[20 266];
 
-% %%
+grid on
+title('accuracy')
+h12=subplot(122);
+hp2=plot(1:300,jaccard1,1:300,jaccard2,'linewidth',2);
+ hp2(2).Color='r';
+  hp2(1).Color=[0 0.56448 1];
+    h12.XTick =20:35:266;
+h12.YTick =0:0.25:1; h12.XLim=[20 266];
+title('jaccard')
+grid on
+%
+figure(2)
+h11=subplot(121);
+hp1=plot(1:300, accuracy1, 1:300, accuracy2,'linewidth',2);
+ hp1(2).Color='r';
+  hp1(1).Color=[0 0.56448 1];
+h11.XLim=[1 300]; h11.YLim=[0 1];
+%h11.YTick =0.84:0.04:1;
+grid on
+title('accuracy')
+h12=subplot(122);
+hp2=plot(1:300,jaccard1,1:300,jaccard2,'linewidth',2);
+ hp2(2).Color='r';
+  hp2(1).Color=[0 0.56448 1];
+h12.XLim=[1 300];
+ h12.YTick =0:0.25:1;
+title('jaccard')
+grid on
+%%
 % h11=subplot(131);
 % imagesc(resultRGB(:,:,:,1)/255)
 % %axis off
