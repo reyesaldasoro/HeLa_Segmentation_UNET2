@@ -7,21 +7,21 @@ close all
 if strcmp(filesep,'/')
     % Running in Mac
     %    load('/Users/ccr22/OneDrive - City, University of London/Acad/ARC_Grant/Datasets/DataARC_Datasets_2019_05_03.mat')
-    cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET/CODE')
+    cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET2/CODE')
     %    baseDir                             = 'Metrics_2019_04_25/metrics/';
 else
     % running in windows 
     try
         % old HP
-        cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
-        dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
-        dataSetDir  = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
-        GTDir       = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
-        baseDirSeg  = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+        cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE')
+        dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\Results';
+        dataSetDir  = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\';
+        GTDir       = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth\';
+        baseDirSeg  = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_4c\';
         baseDirData = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
     catch
         %New Alienware
-        baseDir = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET\CODE';
+        baseDir = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE';
         baseDirSeg  = strcat(baseDir,filesep,'GroundTruth_4c\');
         cd (baseDir);
         dataSaveDir = strcat(baseDir,filesep,'Results',filesep);
@@ -66,7 +66,7 @@ for slicesT = 1:3
                 %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
                 result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
             end
-            %figure(10*counterOptions+currentCase)
+            %figure(10*slicesT+currentCase)
             %imagesc(result==maskRanden{currentCase})
             accuracy2(currentSlice)=sum(sum(result==groundTruth))/rows/cols;
             jaccard2(currentSlice) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
