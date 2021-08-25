@@ -190,6 +190,28 @@ h12.Position=[0.54 0.09 0.43 0.82];
 h22.Position=[0.54 0.09 0.43 0.82];
 
 %%
+
+
+%%
+
+currentSlice=7;
+
+    currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
+            %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
+            
+            currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
+            groundTruth         = currentSeg.groundTruth;
+            currentSeg2          = load(strcat(baseDirSeg2,dirSeg(currentSlice).name));
+            groundTruth2         = currentSeg2.groundTruth;
+          
+figure(3)
+imagesc(resultAll(:,:,currentSlice)+2*(groundTruth2==2))
+figure(5)
+imagesc(imfilter(currentData,gaussF(5,5,1)));
+
+
+%imagesc((groundTruth2==2)+(result2==1))
+
 % h11=subplot(131);
 % imagesc(resultRGB(:,:,:,1)/255)
 % %axis off
