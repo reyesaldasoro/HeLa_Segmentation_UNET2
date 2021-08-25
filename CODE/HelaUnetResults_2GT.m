@@ -60,6 +60,8 @@ accuracy3(numSlices)            = 0;
 jaccard3(numSlices)             = 0;
 
 structEl                        = strel('disk',30);
+structEl2                        = strel('disk',50);
+
 for slicesT = 1:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
@@ -82,7 +84,7 @@ for slicesT = 1:numSlices
                 %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
                 result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
             end
-            result2 = imopen(imclose(result==2,structEl),structEl);
+            result2 = imopen(imclose(result==2,structEl),structEl2);
             %figure(10*slicesT+currentCase)
             %imagesc(result==maskRanden{currentCase})
             accuracy1(currentSlice)=sum(sum(result==groundTruth))/rows/cols;
