@@ -48,9 +48,11 @@ dirData                 = dir(strcat(baseDirData,'*.tiff'));
 
 
 %%
-slicesToSegment = [170 220 260];
+%slicesToSegment = [170 220 260];
+numSlices       = numel(dirSeg);
+slicesToSegment = (1:numSlices);
 
-for slicesT = 1:3 
+for slicesT = 1:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -98,50 +100,56 @@ end
 h0 =figure;
 h0.Position =[ 95         158        1145          420];
 %%
-h11=subplot(131);
-imagesc(resultRGB(:,:,:,1)/255)
-%axis off
-xlabel('(a)','fontsize',20)
-h12=subplot(132);
-imagesc(resultRGB(:,:,:,2)/255)
-%axis off
-xlabel('(b)','fontsize',20)
-h13=subplot(133);
-imagesc(resultRGB(:,:,:,3)/255)
-%axis off
-xlabel('(c)','fontsize',20)
-%%
-h11.XTick=[];h11.YTick=[];
-h12.XTick=[];h12.YTick=[];
-h13.XTick=[];h13.YTick=[];
-%%
+h11=subplot(121);
+plot(1:300, accuracy1, 1:300, accuracy2)
+h12=subplot(122);
+plot(1:300,jaccard1,1:300,jaccard2)
 
-filename='Three_Unet_Hela_Results.png';
-print('-dpng','-r500',filename)
-
-
-h11.Position = [ 0.01    0.12    0.32    0.87];
-h12.Position = [ 0.34    0.12    0.32    0.87];
-h13.Position = [ 0.67    0.12    0.32    0.87];
-
- 
-%%
-figure(2)
-imagesc(resultRGB(:,:,:,1)/255)
-axis off
-set(gca,'Position',[0 0 1 1]);
-filename='Three_Unet_Hela_Results_1.png';
-print('-dpng','-r500',filename)
-
-imagesc(resultRGB(:,:,:,2)/255)
-axis off
-set(gca,'Position',[0 0 1 1]);
-filename='Three_Unet_Hela_Results_2.png';
-print('-dpng','-r500',filename)
-
-
-imagesc(resultRGB(:,:,:,3)/255)
-axis off
-set(gca,'Position',[0 0 1 1]);
-filename='Three_Unet_Hela_Results_3.png';
-print('-dpng','-r500',filename)
+% %%
+% h11=subplot(131);
+% imagesc(resultRGB(:,:,:,1)/255)
+% %axis off
+% xlabel('(a)','fontsize',20)
+% h12=subplot(132);
+% imagesc(resultRGB(:,:,:,2)/255)
+% %axis off
+% xlabel('(b)','fontsize',20)
+% h13=subplot(133);
+% imagesc(resultRGB(:,:,:,3)/255)
+% %axis off
+% xlabel('(c)','fontsize',20)
+% %%
+% h11.XTick=[];h11.YTick=[];
+% h12.XTick=[];h12.YTick=[];
+% h13.XTick=[];h13.YTick=[];
+% %%
+% 
+% filename='Three_Unet_Hela_Results.png';
+% print('-dpng','-r500',filename)
+% 
+% 
+% h11.Position = [ 0.01    0.12    0.32    0.87];
+% h12.Position = [ 0.34    0.12    0.32    0.87];
+% h13.Position = [ 0.67    0.12    0.32    0.87];
+% 
+% 
+% %%
+% figure(2)
+% imagesc(resultRGB(:,:,:,1)/255)
+% axis off
+% set(gca,'Position',[0 0 1 1]);
+% filename='Three_Unet_Hela_Results_1.png';
+% print('-dpng','-r500',filename)
+% 
+% imagesc(resultRGB(:,:,:,2)/255)
+% axis off
+% set(gca,'Position',[0 0 1 1]);
+% filename='Three_Unet_Hela_Results_2.png';
+% print('-dpng','-r500',filename)
+% 
+% 
+% imagesc(resultRGB(:,:,:,3)/255)
+% axis off
+% set(gca,'Position',[0 0 1 1]);
+% filename='Three_Unet_Hela_Results_3.png';
+% print('-dpng','-r500',filename)
