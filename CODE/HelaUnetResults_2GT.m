@@ -1,6 +1,6 @@
 %% Figure Hela Comparison
 
-clear all
+clear variables
 close all
   
   %% Read the files that have been stored in the current folder
@@ -49,9 +49,17 @@ dirData                 = dir(strcat(baseDirData,'*.tiff'));
 
 %%
 %slicesToSegment = [170 220 260];
-numSlices       = numel(dirSeg);
-slicesToSegment = (1:numSlices);
+numSlices                       = numel(dirSeg);
+slicesToSegment                 = (1:numSlices);
+resultAll (rows,cols,numSlices) = 0;
+accuracy1(numSlices)            = 0;
+jaccard1(numSlices)             = 0;
+accuracy2(numSlices)            = 0;
+jaccard2(numSlices)             = 0;
+accuracy3(numSlices)            = 0;
+jaccard3(numSlices)             = 0;
 
+structEl                        = strel('disk',30);
 for slicesT = 1:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
@@ -74,18 +82,23 @@ for slicesT = 1:numSlices
                 %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
                 result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
             end
+            result2 = imopen(imclose(result==2,structEl),structEl);
             %figure(10*slicesT+currentCase)
             %imagesc(result==maskRanden{currentCase})
             accuracy1(currentSlice)=sum(sum(result==groundTruth))/rows/cols;
             jaccard1(currentSlice) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
             accuracy2(currentSlice)=sum(sum(result==groundTruth2))/rows/cols;
             jaccard2(currentSlice) = sum(sum( (groundTruth2==2).*(result==2) )) / sum(sum ( ((groundTruth2==2)|(result==2)) ));
-            %resultAll (:,:,slicesT) = result;
+            accuracy3(currentSlice)=sum(sum(result2==(groundTruth2==2)))/rows/cols;
+            jaccard3(currentSlice) = sum(sum( (groundTruth2==2).*(result2==1) )) / sum(sum ( ((groundTruth2==2)|(result2==1)) ));
+            
+            resultAll (:,:,slicesT) = result2;
 end
 
 %%
 resultRGB        = zeros(rows,cols,3,3);
-for slicesT = 1:3 
+for slicesT = 1%:3 
+    disp(slicesT)
      currentSlice        = slicesToSegment(slicesT); %260% 1:300
      currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
            
@@ -97,14 +110,19 @@ for slicesT = 1:3
     resultRGB(:,:,3,slicesT) = resultRGB(:,:,1,slicesT);
 end
 %%
-h0 =figure;
-h0.Position =[ 95         158        1145          420];
+
+% figure(3)
+% imagesc((resultAll(:,:,1)==2)+)
+
 %%
-figure(1)
+
+%%
+h1 =figure(1);
 h11=subplot(121);
-hp1=plot(1:300, accuracy1, 1:300, accuracy2,'linewidth',2);
+hp1=plot(1:300, accuracy1, 1:300, accuracy2,1:300, accuracy3,'linewidth',2);
  hp1(2).Color='r';
   hp1(1).Color=[0 0.56448 1];
+ hp1(3).Color='k';
   h11.XTick =20:35:266;
   h11.YTick =0.84:0.04:1;
 h11.YLim=[0.84 1]; h11.XLim=[20 266];
@@ -112,31 +130,63 @@ h11.YLim=[0.84 1]; h11.XLim=[20 266];
 grid on
 title('accuracy')
 h12=subplot(122);
-hp2=plot(1:300,jaccard1,1:300,jaccard2,'linewidth',2);
+hp2=plot(1:300,jaccard1,1:300,jaccard2,1:300,jaccard3,'linewidth',2);
  hp2(2).Color='r';
   hp2(1).Color=[0 0.56448 1];
+   hp2(3).Color='k';
+
     h12.XTick =20:35:266;
 h12.YTick =0:0.25:1; h12.XLim=[20 266];
 title('jaccard')
 grid on
 %
-figure(2)
-h11=subplot(121);
-hp1=plot(1:300, accuracy1, 1:300, accuracy2,'linewidth',2);
+h2 =figure(2);
+h21=subplot(121);
+hp1=plot(1:300, accuracy1, 1:300, accuracy2,1:300, accuracy3,'linewidth',2);
  hp1(2).Color='r';
   hp1(1).Color=[0 0.56448 1];
-h11.XLim=[1 300]; h11.YLim=[0 1];
-%h11.YTick =0.84:0.04:1;
+   hp1(3).Color='k';
+
+h21.XLim=[1 300]; h21.YLim=[0.76 1];
+h21.YTick =0.76:0.04:1;
 grid on
 title('accuracy')
-h12=subplot(122);
-hp2=plot(1:300,jaccard1,1:300,jaccard2,'linewidth',2);
+h22=subplot(122);
+hp2=plot(1:300,jaccard1,1:300,jaccard2,1:300,jaccard3,'linewidth',2);
  hp2(2).Color='r';
   hp2(1).Color=[0 0.56448 1];
-h12.XLim=[1 300];
- h12.YTick =0:0.25:1;
+ hp2(3).Color='k';
+  
+h22.XLim=[1 300];h22.YLim=[0 1];
+ h22.YTick =0:0.25:1;
 title('jaccard')
 grid on
+%%
+h4=figure(4);
+h41=gca;
+hp4=plot(1:300,jaccard1,1:300,jaccard2,1:300,jaccard3,'linewidth',2);
+ hp4(2).Color='r';
+  hp4(1).Color=[0 0.56448 1];
+ hp4(3).Color='k';
+  
+h41.XLim=[75 225];h41.YLim=[0.8 1];
+ h41.YTick =0.8:0.05:1;
+ h41.XTick =75:25:225;
+title('jaccard')
+grid on
+
+
+
+%%
+h1.Position =[ 15         400        1000          300];
+h2.Position =[ 15         50        1000          300];
+h4.Position = [60 475 850 240];
+%%
+h11.Position=[0.04 0.09 0.43 0.82];
+h21.Position=[0.04 0.09 0.43 0.82];
+h12.Position=[0.54 0.09 0.43 0.82];
+h22.Position=[0.54 0.09 0.43 0.82];
+
 %%
 % h11=subplot(131);
 % imagesc(resultRGB(:,:,:,1)/255)
