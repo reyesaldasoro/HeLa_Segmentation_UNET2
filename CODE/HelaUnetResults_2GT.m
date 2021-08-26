@@ -47,7 +47,7 @@ dirSeg2                  = dir(strcat(baseDirSeg2,'*.mat'));
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
 
 
-%%
+%%  2021/08/26 saved results in  Results_Unet_Hela_multinuclei
 %slicesToSegment = [170 220 260];
 numSlices                       = numel(dirSeg);
 slicesToSegment                 = (1:numSlices);
