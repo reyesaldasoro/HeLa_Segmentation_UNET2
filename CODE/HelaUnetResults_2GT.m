@@ -99,7 +99,7 @@ end
 
 %%
 resultRGB        = zeros(rows,cols,3,3);
-for slicesT = 1%:3 
+for slicesT = [220] %:3 
     disp(slicesT)
      currentSlice        = slicesToSegment(slicesT); %260% 1:300
      currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -108,9 +108,12 @@ for slicesT = 1%:3
            
     resultRGB(:,:,1,slicesT) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
      %resultRGB(:,:,1,slicesT) = imfilter(currentData,gaussF(3,3,1),'replicate');
-    resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=2)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==2);
+  %  resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=2)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==2);
+    resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=1)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==1);
     resultRGB(:,:,3,slicesT) = resultRGB(:,:,1,slicesT);
 end
+figure
+imagesc(resultRGB(:,:,:,slicesT)/255)
 %%
 
 % figure(3)
