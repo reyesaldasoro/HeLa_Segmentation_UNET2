@@ -99,7 +99,7 @@ end
 
 %%
 resultRGB        = zeros(rows,cols,3,3);
-for slicesT = [220] %:3 
+for slicesT = [60] %:3 
     disp(slicesT)
      currentSlice        = slicesToSegment(slicesT); %260% 1:300
      currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
