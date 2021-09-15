@@ -51,7 +51,7 @@ dirData                 = dir(strcat(baseDirData,'*.tiff'));
 %slicesToSegment = [170 220 260];
 numSlices                       = numel(dirSeg);
 slicesToSegment                 = (1:numSlices);
-resultAll (rows,cols,numSlices) = 0;
+result_Unet (rows,cols,numSlices) = 0;
 accuracy1(numSlices)            = 0;
 jaccard1(numSlices)             = 0;
 accuracy2(numSlices)            = 0;
@@ -63,7 +63,7 @@ structEl                        = strel('disk',30);
 structEl2                        = strel('disk',50);
 structEl3                        = strel('disk',5);
 
-for slicesT = 119:numSlices 
+for slicesT = 1:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -95,12 +95,13 @@ for slicesT = 119:numSlices
             accuracy3(currentSlice)=sum(sum(result2==(groundTruth2==2)))/rows/cols;
             jaccard3(currentSlice) = sum(sum( (groundTruth2==2).*(result2==1) )) / sum(sum ( ((groundTruth2==2)|(result2==1)) ));
             
-            resultAll (:,:,slicesT) = result2;
+            result_Unet (:,:,slicesT) = result;
+            result_Unet_filt (:,:,slicesT) = result2;
 end
 
 %%
 resultRGB        = zeros(rows,cols,3,3);
-for slicesT = [260] %:3 
+for slicesT = [60] %:3 
     disp(slicesT)
      currentSlice        = slicesToSegment(slicesT); %260% 1:300
      currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -110,7 +111,7 @@ for slicesT = [260] %:3
     resultRGB(:,:,1,slicesT) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
      %resultRGB(:,:,1,slicesT) = imfilter(currentData,gaussF(3,3,1),'replicate');
   %  resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=2)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==2);
-    resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(resultAll (:,:,slicesT)~=1)+0.3*resultRGB(:,:,1).*(resultAll (:,:,slicesT)==1);
+    resultRGB(:,:,2,slicesT) = resultRGB(:,:,1,slicesT).*(result_Unet (:,:,slicesT)~=1)+0.3*resultRGB(:,:,1).*(result_Unet (:,:,slicesT)==1);
     resultRGB(:,:,3,slicesT) = resultRGB(:,:,1,slicesT);
 end
 figure
@@ -200,7 +201,7 @@ h7 =figure(7);
 h111=gca;
 hold on
 hp11=plot(1:300, accuracy1,'linewidth',2,'color',[0 0.56448 1]);
-hp12=plot(1:300, accuracy2,'linewidth',1,'color',[1 0 1]);
+hp12=plot(1:300, accuracy2,'linewidth',2,'color',[1 0 0]);
 hp13=plot(1:300, accuracy3,'linewidth',3,'color',[0 0.6 0]);
 hp1=plot(x1,a_inc,'b--','linewidth',0.5);
 hp2=plot(x1,a_res,'r-');
@@ -226,7 +227,7 @@ h222=gca;
 %h22=subplot(122);
 hold on
 hp21=plot(1:300,jaccard1,'linewidth',2,'color',[0 0.56448 1]);
-hp22=plot(1:300,jaccard2,'linewidth',1,'color',[1 0 1]);
+hp22=plot(1:300,jaccard2,'linewidth',2,'color',[1 0 0]);
 hp23=plot(1:300,jaccard3,'linewidth',3,'color',[0 0.6 0]);
 hp24=plot(x2,j_inc,'b--','linewidth',0.5);
 hp25=plot(x2,j_res,'r-');
@@ -287,7 +288,7 @@ currentSlice=7;
             groundTruth2         = currentSeg2.groundTruth;
           
 figure(3)
-imagesc(resultAll(:,:,currentSlice)+2*(groundTruth2==2))
+imagesc(result_Unet(:,:,currentSlice)+2*(groundTruth2==2))
 figure(5)
 imagesc(imfilter(currentData,gaussF(5,5,1)));
 
