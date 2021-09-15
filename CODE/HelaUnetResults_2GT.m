@@ -61,8 +61,9 @@ jaccard3(numSlices)             = 0;
 
 structEl                        = strel('disk',30);
 structEl2                        = strel('disk',50);
+structEl3                        = strel('disk',5);
 
-for slicesT = 1:numSlices 
+for slicesT = 119:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -99,7 +100,7 @@ end
 
 %%
 resultRGB        = zeros(rows,cols,3,3);
-for slicesT = [60] %:3 
+for slicesT = [260] %:3 
     disp(slicesT)
      currentSlice        = slicesToSegment(slicesT); %260% 1:300
      currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -115,7 +116,9 @@ end
 figure
 imagesc(resultRGB(:,:,:,slicesT)/255)
 %%
-
+filename='Hela_260_segmentation_multinuclei.png';
+filename='Hela_220_segmentation_multinuclei.png';
+filename='Hela_170_segmentation_multinuclei.png';
 % figure(3)
 % imagesc((resultAll(:,:,1)==2)+)
 
