@@ -11,7 +11,7 @@ dirGT   = dir(strcat(baseDir_GT,'*.mat'));
 
 scrsz=get(0,'screensize');
 %%
-k=13;      k1=min(k+5,300);k2=max(k-5,1);
+k=80;      k1=min(k+5,300);k2=max(k-5,1);
 currData    = imfilter(imread(strcat(baseDir_HelaCell,dirHela(k).name)),fspecial('Gaussian',3,1));
 currDataup  = imfilter(imread(strcat(baseDir_HelaCell,dirHela(k1).name)),fspecial('Gaussian',3,1));
 currDatadw  = imfilter(imread(strcat(baseDir_HelaCell,dirHela(k2).name)),fspecial('Gaussian',3,1));
