@@ -71,7 +71,7 @@ structEl3                        = strel('disk',5);
 %load('UNet_128x128_Hela.mat')
 centreCell                      = zeros(rows,cols);
 centreCell(500:1400,350:1400)   = 1;
-for slicesT = 48%[82 170 215 251]  %:numSlices 
+for slicesT = 48%[72 82 170 215 251]  %:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -107,22 +107,57 @@ for slicesT = 48%[82 170 215 251]  %:numSlices
             AI_RGB2(AI_RGB2>255)=255;
             AI_RGB2(AI_RGB2<0)=0;
             %imagesc((groundTruth==2)+(groundTruth2==2))
-            figure(1)
+  h1 =figure(1);
+  h241=subplot(2,4,1);
             imagesc(GT_RGB)
-            figure(2)
+  h242=subplot(2,4,2);
             imagesc(HI_RGB)
-            figure(3)
+  h243=subplot(2,4,3);
             imagesc(AI_RGB)
-            figure(4)
+  h244=subplot(2,4,4);
             imagesc(AI_RGB2)
-            figure(5)
+  h245=subplot(2,4,5);
+             imagesc((groundTruth2==2)+2*(centreCell.*(groundTruth2==2)))
+  h246=subplot(2,4,6);
              imagesc(-Hela_nuclei(:,:,currentSlice)+2*(centreCell.*(groundTruth2==2)))
-             colormap gray
-            figure(6)
+  h247=subplot(2,4,7);
+             imagesc(-double(result_Unet(:,:,currentSlice)==2)+2*(groundTruth2==2))
+  h248=subplot(2,4,8);
              imagesc(-double(result_Unet_filt(:,:,currentSlice))+2*(groundTruth2==2))
-             colormap gray
-            
+                  colormap gray
+            %             figure(1)
+%             imagesc(GT_RGB)
+%             figure(2)
+%             imagesc(HI_RGB)
+%             figure(3)
+%             imagesc(AI_RGB)
+%             figure(4)
+%             imagesc(AI_RGB2)
+%             figure(5)
+%              imagesc(-Hela_nuclei(:,:,currentSlice)+2*(centreCell.*(groundTruth2==2)))
+%              colormap gray
+%             figure(6)
+%              imagesc(-double(result_Unet(:,:,currentSlice)==2)+2*(groundTruth2==2))
+%              colormap gray           
+%              figure(7)
+%              imagesc(-double(result_Unet_filt(:,:,currentSlice))+2*(groundTruth2==2))
+%              colormap gray
+%              figure(8)
+%              imagesc((groundTruth2==2)+2*(centreCell.*(groundTruth2==2)))
+%                   colormap gray
 end
+%
+hW = 0.47;
+hH = 0.22;
+%
+h1.Position =[  65.8000  353.0000  754.4000  420.0000];
 
-
+h241.Position = [0.03 0.51 hH hW];h241.XTick=[];h241.YTick=[];
+h242.Position = [0.27 0.51 hH hW];h242.XTick=[];h242.YTick=[];
+h243.Position = [0.51 0.51 hH hW];h243.XTick=[];h243.YTick=[];
+h244.Position = [0.75 0.51 hH hW];h244.XTick=[];h244.YTick=[];
+h245.Position = [0.03 0.02 hH hW];h245.XTick=[];h245.YTick=[];
+h246.Position = [0.27 0.02 hH hW];h246.XTick=[];h246.YTick=[];
+h247.Position = [0.51 0.02 hH hW];h247.XTick=[];h247.YTick=[];
+h248.Position = [0.75 0.02 hH hW];h248.XTick=[];h248.YTick=[];
 
