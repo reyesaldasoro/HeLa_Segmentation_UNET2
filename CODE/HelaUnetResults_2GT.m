@@ -98,6 +98,10 @@ for slicesT = 1:numSlices
             result_Unet (:,:,slicesT) = result;
             result_Unet_filt (:,:,slicesT) = result2;
 end
+result_Unet = uint8(result_Unet);
+
+save('Results_Seg_Unet_Hela_multinuclei_2021_09_16','result_Unet','result_Unet_filt')
+
 
 %%
 resultRGB        = zeros(rows,cols,3,3);
