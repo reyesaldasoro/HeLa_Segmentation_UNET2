@@ -39,7 +39,7 @@ load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\He
 %% load results multinuclei Unet
 %load('Results_Unet_Hela_multinuclei_2021_08_26.mat')
 %clear j_* ja* ac* a_*
-load('Results_Seg_Unet_Hela_multinuclei_2021_09_15')
+load('Results_Seg_Unet_Hela_multinuclei_2021_09_16')
 
 %%
 numClasses                  = 4 ;
@@ -57,20 +57,21 @@ dirData                 = dir(strcat(baseDirData,'*.tiff'));
 %slicesToSegment = [170 220 260];
 numSlices                       = numel(dirSeg);
 slicesToSegment                 = (1:numSlices);
-resultAll (rows,cols,numSlices) = 0;
-accuracy1(numSlices)            = 0;
-jaccard1(numSlices)             = 0;
-accuracy2(numSlices)            = 0;
-jaccard2(numSlices)             = 0;
-accuracy3(numSlices)            = 0;
-jaccard3(numSlices)             = 0;
+% resultAll (rows,cols,numSlices) = 0;
+% accuracy1(numSlices)            = 0;
+% jaccard1(numSlices)             = 0;
+% accuracy2(numSlices)            = 0;
+% jaccard2(numSlices)             = 0;
+% accuracy3(numSlices)            = 0;
+% jaccard3(numSlices)             = 0;
 
 structEl                        = strel('disk',30);
 structEl2                        = strel('disk',50);
 structEl3                        = strel('disk',5);
 %load('UNet_128x128_Hela.mat')
-
-for slicesT = 41%[82 170 215 251]  %:numSlices 
+centreCell                      = zeros(rows,cols);
+centreCell(500:1400,350:1400)   = 1;
+for slicesT = 48%[82 170 215 251]  %:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -83,19 +84,43 @@ for slicesT = 41%[82 170 215 251]  %:numSlices
             
             
             GT_RGB(:,:,1) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
-            GT_RGB(:,:,2) = GT_RGB(:,:,1)+60*uint8(groundTruth2==2);
+            GT_RGB(:,:,2) = GT_RGB(:,:,1)+60*uint8(centreCell.*(groundTruth2==2));
             GT_RGB(:,:,3) = GT_RGB(:,:,1)+30*uint8(groundTruth2==2);
             GT_RGB(GT_RGB>255)=255;
             GT_RGB(GT_RGB<0)=0;
+            
+            HI_RGB(:,:,1) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
+            HI_RGB(:,:,2) = HI_RGB(:,:,1)+60*uint8(Hela_nuclei(:,:,currentSlice));
+            HI_RGB(:,:,3) = HI_RGB(:,:,1);
+            HI_RGB(HI_RGB>255)=255;
+            HI_RGB(HI_RGB<0)=0;
+            
+            AI_RGB(:,:,1) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
+            AI_RGB(:,:,2) = AI_RGB(:,:,1)+60*uint8(result_Unet(:,:,currentSlice)==2);
+            AI_RGB(:,:,3) = AI_RGB(:,:,1);
+            AI_RGB(AI_RGB>255)=255;
+            AI_RGB(AI_RGB<0)=0;
+            
+            AI_RGB2(:,:,1) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
+            AI_RGB2(:,:,2) = AI_RGB2(:,:,1)+60*uint8(result_Unet_filt(:,:,currentSlice));
+            AI_RGB2(:,:,3) = AI_RGB2(:,:,1);
+            AI_RGB2(AI_RGB2>255)=255;
+            AI_RGB2(AI_RGB2<0)=0;
             %imagesc((groundTruth==2)+(groundTruth2==2))
             figure(1)
-            imagesc(GT_RGB(:,:,:))
+            imagesc(GT_RGB)
             figure(2)
-            imagesc((groundTruth==2)+(groundTruth2==2))
+            imagesc(HI_RGB)
             figure(3)
-             imagesc(-Hela_nuclei(:,:,currentSlice)+2*(groundTruth2==2))
+            imagesc(AI_RGB)
             figure(4)
-             imagesc(-double(resultAll(:,:,currentSlice))+2*(groundTruth2==2))
+            imagesc(AI_RGB2)
+            figure(5)
+             imagesc(-Hela_nuclei(:,:,currentSlice)+2*(centreCell.*(groundTruth2==2)))
+             colormap gray
+            figure(6)
+             imagesc(-double(result_Unet_filt(:,:,currentSlice))+2*(groundTruth2==2))
+             colormap gray
             
 end
 
