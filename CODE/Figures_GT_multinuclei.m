@@ -70,8 +70,8 @@ structEl2                        = strel('disk',50);
 structEl3                        = strel('disk',5);
 %load('UNet_128x128_Hela.mat')
 centreCell                      = zeros(rows,cols);
-centreCell(500:1400,350:1400)   = 1;
-for slicesT = 48%[72 82 170 215 251]  %:numSlices 
+centreCell(450:1400,350:1400)   = 1;
+for slicesT = 251%[48 71 82 170 215 251]  %:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -147,17 +147,30 @@ for slicesT = 48%[72 82 170 215 251]  %:numSlices
 %                   colormap gray
 end
 %
-hW = 0.47;
-hH = 0.22;
+hW      = 0.42;
+hH      = 0.235;
+hBase   = 0.02;
+hBase2  = 0.52;
+fSize   = 14;
 %
 h1.Position =[  65.8000  353.0000  754.4000  420.0000];
 
-h241.Position = [0.03 0.51 hH hW];h241.XTick=[];h241.YTick=[];
-h242.Position = [0.27 0.51 hH hW];h242.XTick=[];h242.YTick=[];
-h243.Position = [0.51 0.51 hH hW];h243.XTick=[];h243.YTick=[];
-h244.Position = [0.75 0.51 hH hW];h244.XTick=[];h244.YTick=[];
-h245.Position = [0.03 0.02 hH hW];h245.XTick=[];h245.YTick=[];
-h246.Position = [0.27 0.02 hH hW];h246.XTick=[];h246.YTick=[];
-h247.Position = [0.51 0.02 hH hW];h247.XTick=[];h247.YTick=[];
-h248.Position = [0.75 0.02 hH hW];h248.XTick=[];h248.YTick=[];
+h241.Position = [0.01 hBase2 hH hW];h241.XTick=[];h241.YTick=[];
+h242.Position = [0.26 hBase2 hH hW];h242.XTick=[];h242.YTick=[];
+h243.Position = [0.51 hBase2 hH hW];h243.XTick=[];h243.YTick=[];
+h244.Position = [0.76 hBase2 hH hW];h244.XTick=[];h244.YTick=[];
+h245.Position = [0.01 hBase hH hW];h245.XTick=[];h245.YTick=[];
+h246.Position = [0.26 hBase hH hW];h246.XTick=[];h246.YTick=[];
+h247.Position = [0.51 hBase hH hW];h247.XTick=[];h247.YTick=[];
+h248.Position = [0.76 hBase hH hW];h248.XTick=[];h248.YTick=[];
 
+h241.Title.FontSize=fSize; h241.Title.String='(a)';
+h242.Title.FontSize=fSize; h242.Title.String='(b)';
+h243.Title.FontSize=fSize; h243.Title.String='(c)';
+h244.Title.FontSize=fSize; h244.Title.String='(d)';
+h245.Title.FontSize=fSize; h245.Title.String='(e)';
+h246.Title.FontSize=fSize; h246.Title.String='(f)';
+h247.Title.FontSize=fSize; h247.Title.String='(g)';
+h248.Title.FontSize=fSize; h248.Title.String='(h)';
+
+filename = strcat('Hela_segmentation_multinuclei_accuracy_',num2str(slicesT),'.png');
