@@ -100,7 +100,7 @@ for slicesT = 1:numSlices
 end
 result_Unet = uint8(result_Unet);
 
-save('Results_Seg_Unet_Hela_multinuclei_2021_09_16','result_Unet','result_Unet_filt')
+save('Results_Seg_Unet_Hela_multinuclei_2021_09_23','result_Unet','result_Unet_filt','acc*','jac*')
 
 
 %%
@@ -200,7 +200,10 @@ h12.YTick =0:0.25:1; h12.XLim=[20 266];
 title('jaccard')
 grid on
 %%
-h7 =figure(7);
+
+x2 = [1:19 x1 266:300];
+a_ImPr2 = [ones(1,19) a_ImPr ones(1,35)];
+h7 =figure(17);
 %h21=subplot(121);
 h111=gca;
 hold on
@@ -210,7 +213,8 @@ hp13=plot(1:300, accuracy3,'linewidth',3,'color',[0 0.6 0]);
 hp1=plot(x1,a_inc,'b--','linewidth',0.5);
 hp2=plot(x1,a_res,'r-');
 hp3=plot(x1,a_vgg,'-','color',[1 1 1]*0.4);
-hp4=plot(x1,a_ImPr,'k','linewidth',3);
+%hp4=plot(x1,a_ImPr,'k','linewidth',3);
+hp4=plot(x2,a_ImPr2,'k','linewidth',3);
 hold off
 % hp1(2).Color='r';
 %  hp1(1).Color=[0 0.56448 1];
@@ -219,14 +223,14 @@ hold off
 h111.XLim=[1 300]; h111.YLim=[0.84 1];
 h111.YTick =0.84:0.04:1;
 grid on
-title('accuracy')
+ylabel('Accuracy','fontsize',18)
 h7.Position =[ 15         400        1000          300];
 
-h111.Position=[0.04 0.09 0.94 0.82];
+h111.Position=[0.07 0.09 0.94 0.82];
 
 
 %%
-h8 =figure(8);
+h8 =figure(18);
 h222=gca;
 %h22=subplot(122);
 hold on
@@ -244,12 +248,13 @@ hold off
   
 h22.XLim=[1 300];h22.YLim=[0 1];
  h22.YTick =0:0.25:1;
-title('jaccard')
+%title('jaccard')
+ylabel('Jaccard Index','fontsize',18)
 grid on
 
 h8.Position =[ 15         100        1000          300];
 
-h222.Position=[0.04 0.09 0.94 0.82];
+h222.Position=[0.07 0.09 0.94 0.82];
 %%
 h4=figure(4);
 h41=gca;
