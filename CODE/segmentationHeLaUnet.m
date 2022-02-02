@@ -200,7 +200,7 @@ for numEpochsName=3  %1:4
             
             imageSize = [64 64];
             numClasses = 4;
-            encoderDepth = 3;
+            encoderDepth = 5;
             lgraph = unetLayers(imageSize,numClasses,'EncoderDepth',encoderDepth);
             net2                = trainNetwork(trainingData,lgraph,opts);
             
@@ -221,14 +221,16 @@ for numEpochsName=3  %1:4
             currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
             groundTruth         = currentSeg.groundTruth;
             
-            
-            %C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
-                       
-            C1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
-            C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
-            C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
-            C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
-            C=[C1 C2; C3 C4];
+            % With low memory this can create errors, use the four
+            % quadrants instead
+             C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
+            C2                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net2);           
+            % Segmentation in four quadrants
+%             C1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
+%             C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
+%             C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
+%             C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
+%             C=[C1 C2; C3 C4];
             
             %B                   = labeloverlay(currentData, C);
             %figure
@@ -241,6 +243,12 @@ for numEpochsName=3  %1:4
                 %strcat('T',num2str(counterClass))
                 %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
                 result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
+            end
+            result2               = zeros(rows,cols);
+            for counterClass=1:numClasses
+                %strcat('T',num2str(counterClass))
+                %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
+                result2 = result2 +(counterClass*(C2==strcat('T',num2str(counterClass))));
             end
             %figure(10*counterOptions+currentCase)
             %imagesc(result==maskRanden{currentCase})
