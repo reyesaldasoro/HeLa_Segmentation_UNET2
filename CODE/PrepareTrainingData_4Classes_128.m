@@ -13,12 +13,21 @@ if strcmp(filesep,'/')
     %    baseDir                             = 'Metrics_2019_04_25/metrics/';
 else
     % running in windows
-    cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
+    %cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
+    cd ('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE')
+   
+    
 end
 
+baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\';
 
-baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
-baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+%baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
+%baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+
+baseDirData             = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
+% Four classes (1-NE, 2-Nucleus,3-cell, 4-background) Single Cell
+baseDirSeg              = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_4c\';
+
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
 dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
 
@@ -121,9 +130,9 @@ for currentSlice        = 101:2:180
             %fName               = strcat('Hela_Data_Slice_',num2str(currentSlice),'_Sample_',num2str(counterR),'_',num2str(counterC),'.png');
             %fNameL              = strcat('Hela_Label_Slice',num2str(currentSlice),'_Sample_',num2str(counterR),'_',num2str(counterC),'.png');
             fName               = strcat('Hela_Data_Slice_',numSlice,'_Sample_',numcounterR,'_',numcounterC,'.png');
-            fNameL              = strcat('Hela_Label_Slice',numSlice,'_Sample_',numcounterR,'_',numcounterC,'.png');
-            %imwrite(currentSection,strcat('trainingImages_4c_128',filesep,fName))
-            %imwrite(currentLabel,strcat('trainingLabels_4c_128',filesep,fNameL))
+            fNameL              = strcat('Hela_Label_Slice_',numSlice,'_Sample_',numcounterR,'_',numcounterC,'.png');
+            imwrite(currentSection,strcat('trainingImages_4c_128',filesep,fName))
+            imwrite(currentLabel,strcat('trainingLabels_4c_128',filesep,fNameL))
             
             a(:,:,k)=currentSection;
             b(:,:,k)=currentLabel;
