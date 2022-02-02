@@ -23,18 +23,18 @@ clc
 if strcmp(filesep,'/')
     % Running in Mac
     %    load('/Users/ccr22/OneDrive - City, University of London/Acad/ARC_Grant/Datasets/DataARC_Datasets_2019_05_03.mat')
-    cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET/CODE')
+    cd ('/Users/ccr22/Acad/GitHub/HeLa_Segmentation_UNET2/CODE')
     %    baseDir                             = 'Metrics_2019_04_25/metrics/';
 else
 %     % running in windows HP
-%     cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE')
-%     dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
-%     dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
-%     GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
-%     baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+%     cd ('D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE')
+%     dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\Results';
+%     dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\';
+%     GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth\';
+%     baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_4c\';
     
     % running in windows Alienware
-    baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET\';
+    baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\';
     cd (strcat(baseDir,'CODE'))
     dataSaveDir = strcat(baseDir,'CODE\Results\');
     dataSetDir  = strcat(baseDir,'CODE\');
@@ -48,13 +48,18 @@ end
 %%
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
-imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
-labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
-sizeTrainingPatch           = 128;
+% imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
+% labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
+%sizeTrainingPatch           = 128;
 
 %imageDir                   = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
 %labelDir                   = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
 %sizeTrainingPatch          = 64;
+
+imageDir                   = fullfile(dataSetDir,strcat('trainingImages',filesep));
+labelDir                   = fullfile(dataSetDir,strcat('trainingLabels',filesep));
+sizeTrainingPatch          = 64;
+
 
 %imageSize                   = [rows cols];
 encoderDepth                = 4;
@@ -191,6 +196,14 @@ for numEpochsName=3  %1:4
             trainingData        = pixelLabelImageDatastore(imds,pxds);
             %
             net                 = trainNetwork(trainingData,layers,opts);
+            % Create alternative U-Net
+            
+            imageSize = [64 64];
+            numClasses = 4;
+            encoderDepth = 3;
+            lgraph = unetLayers(imageSize,numClasses,'EncoderDepth',encoderDepth);
+            net2                = trainNetwork(trainingData,lgraph,opts);
+            
             %
             % nameNet             = strcat(dataSaveDir,'Network_Case_',num2str(currentCase),'_Enc_',nameEncoder,'_numL_',nameLayers,'_NumEpochs_',num2str(numEpochs));
             % disp(nameNet)
