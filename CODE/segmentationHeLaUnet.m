@@ -48,17 +48,18 @@ end
 %%
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
-% imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
-% labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
-%sizeTrainingPatch           = 128;
+ imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
+ labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
+sizeTrainingPatch           = 128;
 
 %imageDir                   = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
 %labelDir                   = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
 %sizeTrainingPatch          = 64;
 
-imageDir                   = fullfile(dataSetDir,strcat('trainingImages',filesep));
-labelDir                   = fullfile(dataSetDir,strcat('trainingLabels',filesep));
-sizeTrainingPatch          = 64;
+
+% imageDir                   = fullfile(dataSetDir,strcat('trainingImages',filesep));
+% labelDir                   = fullfile(dataSetDir,strcat('trainingLabels',filesep));
+% sizeTrainingPatch          = 64;
 
 
 %imageSize                   = [rows cols];
@@ -198,9 +199,9 @@ for numEpochsName=3  %1:4
             net                 = trainNetwork(trainingData,layers,opts);
             % Create alternative U-Net
             
-            imageSize = [64 64];
+            imageSize = [sizeTrainingPatch sizeTrainingPatch];
             numClasses = 4;
-            encoderDepth = 5;
+            encoderDepth = 3;
             lgraph = unetLayers(imageSize,numClasses,'EncoderDepth',encoderDepth);
             net2                = trainNetwork(trainingData,lgraph,opts);
             
@@ -232,9 +233,15 @@ for numEpochsName=3  %1:4
 %             C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
 %             C=[C1 C2; C3 C4];
             
-            %B                   = labeloverlay(currentData, C);
-            %figure
-            %imagesc(B)
+            B                   = labeloverlay(currentData, C);
+            figure
+            imagesc(B)
+            
+            B2                   = labeloverlay(currentData, C2);
+            figure
+            imagesc(B2)
+            
+            
             [rows,cols]          = size(currentData);
             
             % Convert from semantic to numeric
