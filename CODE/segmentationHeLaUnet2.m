@@ -31,7 +31,8 @@ else
     cd (strcat(baseDir,'CODE'))
     dataSaveDir = strcat(baseDir,'CODE\Results\');
     dataSetDir  = strcat(baseDir,'CODE\');
-    GTDir       = strcat(baseDir,'CODE\GroundTruth\');
+    %GTDir       = strcat(baseDir,'CODE\GroundTruth\');
+    GTDir       = strcat(baseDir,'CODE\GroundTruth_multiNuclei\');
     baseDirSeg  = strcat(baseDir,'CODE\GroundTruth_4c\');
     
     dir_8000    = 'C:\Users\sbbk034\Documents\Acad\Crick\Hela8000_tiff\';
@@ -108,29 +109,28 @@ net2                = trainNetwork(trainingData,lgraph,opts);
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
 
-for  currentSlice        = 260% 1:300
+for  currentSlice        = 260% 1:300 
     disp(currentSlice)
     currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
-    currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
     [rows,cols]          = size(currentData);
     currentGT           = load (strcat(GTDir,'GT_Slice_',num2str(currentSlice)));
     groundTruth         = currentGT.groundTruth;
-    currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
-    groundTruth         = currentSeg.groundTruth;
     % With low memory this can create errors, use the four  quadrants instead
-    C2                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net2);
+    segmentedData                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net2);
     % Segmentation in four quadrants
-    %  C1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
-    %  C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
-    %  C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
-    %  C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
-    %             C=[C1 C2; C3 C4];
-    B2                   = labeloverlay(currentData, C2);
-    figure; imagesc(B2)
+    %  Q1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
+    %  Q2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
+    %  Q3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
+    %  Q4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
+    %  segmentedData        = [Q1 Q2; Q3 Q4];
+    
+    % Intermediate display of results
+    % segmentationAndData                   = labeloverlay(currentData, segmentedData);
+    % figure; imagesc(segmentationAndData)
     % Convert from semantic to numeric to calculate jaccard and accuracy
-    result2               = zeros(rows,cols);
+    result               = zeros(rows,cols);
     for counterClass=1:numClasses
-        result2 = result2 +(counterClass*(C2==strcat('T',num2str(counterClass))));
+        result = result +(counterClass*(segmentedData==strcat('T',num2str(counterClass))));
     end
 
 
