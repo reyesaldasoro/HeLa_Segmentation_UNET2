@@ -1,5 +1,3 @@
-
-
 %% Clear all variables and close all figures
 clear all
 close all
@@ -27,6 +25,8 @@ baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\
 baseDirData             = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
 % Four classes (1-NE, 2-Nucleus,3-cell, 4-background) Single Cell
 baseDirSeg              = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_4c\';
+% Four classes (1-NE, 2-Nucleus,3-cell, 4-background) Multi Cell
+baseDirSeg              = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_multiNuclei\';
 
 dirData                 = dir(strcat(baseDirData,'*.tiff'));
 dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
