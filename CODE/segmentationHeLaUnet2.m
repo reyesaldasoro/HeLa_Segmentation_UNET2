@@ -36,7 +36,7 @@ else
     baseDirSeg  = strcat(baseDir,'CODE\GroundTruth_4c\');
     
     dir_8000    = 'C:\Users\sbbk034\Documents\Acad\Crick\Hela8000_tiff\';
-    dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
+    dirSeg      = dir(strcat(baseDirSeg,'*.mat'));
 end
 %% Training data and labels
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
@@ -109,9 +109,11 @@ net2                = trainNetwork(trainingData,lgraph,opts);
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
 
-for  currentSlice        = 260% 1:300 
+for  currentSlice        = 60% 1:300 
     disp(currentSlice)
-    currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
+    %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
+    currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
+    
     [rows,cols]          = size(currentData);
     currentGT           = load (strcat(GTDir,'GT_Slice_',num2str(currentSlice)));
     groundTruth         = currentGT.groundTruth;
@@ -133,7 +135,9 @@ for  currentSlice        = 260% 1:300
         result = result +(counterClass*(segmentedData==strcat('T',num2str(counterClass))));
     end
 
-
+    % Result has the following classes:
+    % 1 - Nuclear Envelope, 2 - Nucleus, 3-Cell, 4 - Background
+    % 
     accuracy2(currentSlice)                             =sum(sum(result==groundTruth))/rows/cols;
     jaccard2(currentSlice)                              = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
      timeSaved= datevec(date);
