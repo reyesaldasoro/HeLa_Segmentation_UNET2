@@ -19,8 +19,15 @@ else
     %     GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth\';
     %     baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_4c\';
     
+    %    baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
+    %    dirData                 = dir(strcat(baseDirData,'*.tiff'));
+    
     % running in windows Alienware
-    baseDir     = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\';
+    baseDir         = 'C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\';
+    baseDirData     = 'C:\Users\sbbk034\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
+    dirData                 = dir(strcat(baseDirData,'*.tiff'));
+    
+    
     cd (strcat(baseDir,'CODE'))
     dataSaveDir = strcat(baseDir,'CODE\Results\');
     dataSetDir  = strcat(baseDir,'CODE\');
@@ -65,14 +72,14 @@ jaccard(3,3,4) = 0;
 
 
 
-%% U-Net definition and training 
+%% U-Net definition and training
 numClasses                  = 4 ;
 
-% The class names are a sequence of options for the textures, e.g.
+% The class names are a sequence of options for the classes, e.g.
 % classNames = ["T1","T2","T3","T4","T5"];
 clear classNames
 for counterClass=1:numClasses
-    classNames(counterClass) = strcat("T",num2str(counterClass));
+    classNames2(counterClass) = strcat("T",num2str(counterClass));
 end
 % The labels are simply the numbers of the textures, same numbers
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
@@ -80,8 +87,8 @@ labelIDs                    = (1:numClasses);
 pxds                        = pixelLabelDatastore(labelDir,classNames,labelIDs);
 
 
-%
-trainingData        = pixelLabelImageDatastore(imds,pxds);
+% training data
+trainingData                = pixelLabelImageDatastore(imds,pxds);
 %
 
 % Create  U-Net
@@ -98,102 +105,40 @@ opts                = trainingOptions(typeEncoder, ...
     'MiniBatchSize',64);
 % Train U-Net
 net2                = trainNetwork(trainingData,lgraph,opts);
-
-%
-% nameNet             = strcat(dataSaveDir,'Network_Case_',num2str(currentCase),'_Enc_',nameEncoder,'_numL_',nameLayers,'_NumEpochs_',num2str(numEpochs));
-% disp(nameNet)
-%save(nameNet,'net')
-%
-currentSlice        = 100;
-
-currentData         = imread(strcat('C:\Users\sbbk034\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
-%currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
-%currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
-currentGT           = load (strcat(GTDir,'GT_Slice_',num2str(currentSlice)));
-groundTruth         = currentGT.groundTruth;
-
-
-currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
-groundTruth         = currentSeg.groundTruth;
-
-% With low memory this can create errors, use the four
-% quadrants instead
-C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
-C2                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net2);
-% Segmentation in four quadrants
-%             C1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
-%             C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
-%             C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
-%             C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
-%             C=[C1 C2; C3 C4];
-
-B                   = labeloverlay(currentData, C);
-figure
-imagesc(B)
-
-B2                   = labeloverlay(currentData, C2);
-figure
-imagesc(B2)
-
-
-[rows,cols]          = size(currentData);
-
-% Convert from semantic to numeric
-result               = zeros(rows,cols);
-for counterClass=1:numClasses
-    %strcat('T',num2str(counterClass))
-    %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
-    result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
-end
-result2               = zeros(rows,cols);
-for counterClass=1:numClasses
-    %strcat('T',num2str(counterClass))
-    %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
-    result2 = result2 +(counterClass*(C2==strcat('T',num2str(counterClass))));
-end
-%figure(10*counterOptions+currentCase)
-%imagesc(result==maskRanden{currentCase})
-accuracy(numLayersNetwork,caseEncoder,numEpochsName)=sum(sum(result==groundTruth))/rows/cols;
-jaccard(numLayersNetwork,caseEncoder,numEpochsName) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
-timeSaved= datevec(date);
-%save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')
-disp('----------------------------------------------')
-disp([numEpochsName caseEncoder numLayersNetwork])
-disp('----------------------------------------------')
-disp(accuracy)
-
-
-
-misclassification = 100*(1-accuracy);
-
 %% Run segmentation in all slices
+% Once the U-Net has been trained, segmentation is performed here:
 
-baseDirData             = 'D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\';
-dirData                 = dir(strcat(baseDirData,'*.tiff'));
-
-%%
 for  currentSlice        = 260% 1:300
     disp(currentSlice)
+    currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\',dirData(currentSlice).name));
-    %currentSeg          = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329_manual\ROI_1656-6756-329_z0',num2str(currentSlice),'.tif'));
-    
+    [rows,cols]          = size(currentData);
+    currentGT           = load (strcat(GTDir,'GT_Slice_',num2str(currentSlice)));
+    groundTruth         = currentGT.groundTruth;
     currentSeg          = load(strcat(baseDirSeg,dirSeg(currentSlice).name));
     groundTruth         = currentSeg.groundTruth;
-    
-    
-    C                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net);
-    
-    % Convert from semantic to numeric
-    result               = zeros(rows,cols);
+    % With low memory this can create errors, use the four  quadrants instead
+    C2                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net2);
+    % Segmentation in four quadrants
+    %  C1                   = semanticseg(imfilter(currentData(1:1000,1:1000),gaussF(3,3,1),'replicate'),net);
+    %  C2                   = semanticseg(imfilter(currentData(1:1000,1001:2000),gaussF(3,3,1),'replicate'),net);
+    %  C3                   = semanticseg(imfilter(currentData(1001:2000,1:1000),gaussF(3,3,1),'replicate'),net);
+    %  C4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
+    %             C=[C1 C2; C3 C4];
+    B2                   = labeloverlay(currentData, C2);
+    figure; imagesc(B2)
+    % Convert from semantic to numeric to calculate jaccard and accuracy
+    result2               = zeros(rows,cols);
     for counterClass=1:numClasses
-        %strcat('T',num2str(counterClass))
-        %result = result + counterClass*((C==strcat('T',num2str(counterClass))));
-        result = result +(counterClass*(C==strcat('T',num2str(counterClass))));
+        result2 = result2 +(counterClass*(C2==strcat('T',num2str(counterClass))));
     end
-    %figure(10*counterOptions+currentCase)
-    %imagesc(result==maskRanden{currentCase})
-    accuracy2(currentSlice)=sum(sum(result==groundTruth))/rows/cols;
-    jaccard2(currentSlice) = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
+
+
+    accuracy2(currentSlice)                             =sum(sum(result==groundTruth))/rows/cols;
+    jaccard2(currentSlice)                              = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
+     timeSaved= datevec(date);
+   
+    %save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')   
 end
 
 %%
