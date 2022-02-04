@@ -37,7 +37,11 @@ else
     
     dir_8000    = 'C:\Users\sbbk034\Documents\Acad\Crick\Hela8000_tiff\';
     dirSeg      = dir(strcat(baseDirSeg,'*.mat'));
+    dirGT       = dir(strcat(GTDir,'*.mat'));
 end
+
+
+numSlices       = numel(dirGT);
 %% Training data and labels
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
@@ -108,14 +112,21 @@ opts                = trainingOptions(typeEncoder, ...
 net2                = trainNetwork(trainingData,lgraph,opts);
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
+accuracy(numSlices)     =0;
+accuracyN(numSlices)     =0;
+jaccardN(numSlices)     =0;
+accuracy2(numSlices)     =0;
+accuracyN2(numSlices)     =0;
+jaccardN2(numSlices)     =0;
 
-for  currentSlice        = 60% 1:300 
+%%
+for  currentSlice        = 250%1:300 
     disp(currentSlice)
     %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
     
     [rows,cols]          = size(currentData);
-    currentGT           = load (strcat(GTDir,'GT_Slice_',num2str(currentSlice)));
+    currentGT           = load (strcat(GTDir,dirGT(currentSlice).name));
     groundTruth         = currentGT.groundTruth;
     % With low memory this can create errors, use the four  quadrants instead
     segmentedData                   = semanticseg(imfilter(currentData,gaussF(3,3,1),'replicate'),net2);
@@ -126,25 +137,61 @@ for  currentSlice        = 60% 1:300
     %  Q4                   = semanticseg(imfilter(currentData(1001:2000,1001:2000),gaussF(3,3,1),'replicate'),net);
     %  segmentedData        = [Q1 Q2; Q3 Q4];
     
-    % Intermediate display of results
-    % segmentationAndData                   = labeloverlay(currentData, segmentedData);
-    % figure; imagesc(segmentationAndData)
+    % %%%%%% Intermediate display of results %%%%%%%
+     segmentationAndData                   = labeloverlay(currentData, segmentedData);
+     figure; imagesc(segmentationAndData)
     % Convert from semantic to numeric to calculate jaccard and accuracy
+    % Result has the following classes:
+    % 1 - Nuclear Envelope, 2 - Nucleus, 3-Cell, 4 - Background
     result               = zeros(rows,cols);
     for counterClass=1:numClasses
         result = result +(counterClass*(segmentedData==strcat('T',num2str(counterClass))));
     end
 
-    % Result has the following classes:
-    % 1 - Nuclear Envelope, 2 - Nucleus, 3-Cell, 4 - Background
-    % 
-    accuracy2(currentSlice)                             =sum(sum(result==groundTruth))/rows/cols;
-    jaccard2(currentSlice)                              = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
-     timeSaved= datevec(date);
-   
+    % Calculate Metrics,
+    % Absolute accuracy for all classes
+    accuracy(currentSlice)         = sum(sum(result==groundTruth))/rows/cols;
+    
+    % Accuracy, Jaccard for the Nuclei
+    TP                              = (groundTruth==2).*(result==2);
+    TN                              = (groundTruth~=2).*(result~=2);
+    FP                              = (groundTruth~=2).*(result==2);
+    FN                              = (groundTruth==2).*(result~=2);
+    
+    
+    accuracyN(currentSlice)         = (sum(TP(:))+sum(TN(:)))/rows/cols;
+    jaccardN(currentSlice)          = (sum(TP(:)))/(sum(TP(:))+sum(FN(:))+sum(FP(:)));
+    
+    % postProcess
+    new_result                      = postProcessHela(result);
+    TP2                              = (groundTruth==2).*(new_result==2);
+    TN2                              = (groundTruth~=2).*(new_result~=2);
+    FP2                              = (groundTruth~=2).*(new_result==2);
+    FN2                              = (groundTruth==2).*(new_result~=2);
+    
+  
+    accuracyN2(currentSlice)         = (sum(TP2(:))+sum(TN2(:)))/rows/cols;
+    jaccardN2(currentSlice)          = (sum(TP2(:)))/(sum(TP2(:))+sum(FN2(:))+sum(FP2(:)));    
+    %jaccard(currentSlice)          = sum(sum( (groundTruth==2).*(result==2) )) / sum(sum ( ((groundTruth==2)|(result==2)) ));
+
+     accuracy(currentSlice)         = sum(sum(new_result==groundTruth))/rows/cols;   
+     
+     
     %save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')   
 end
+    timeSaved= datevec(date);
+    
+ %%
 
+subplot(221)
+imagesc(repmat(imfilter(currentData,gaussF(3,3,1),'replicate'),[1 1 3]))
+subplot(222)
+imagesc(groundTruth)
+subplot(223) 
+imagesc(result)
+subplot(224)
+imagesc(new_result)
+colormap jet
 %%
 figure
 resultRGB        = zeros(rows,cols,3);
