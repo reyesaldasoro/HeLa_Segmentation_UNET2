@@ -61,7 +61,7 @@ jaccard2(numSlices)     =0;
 jaccard3(numSlices)     =0;
 
 %%
-for  currentSlice        =  1:numSlices 
+for  currentSlice        = 119% 1:numSlices 
     disp(currentSlice)
     %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -131,7 +131,7 @@ end
 timeSaved= datevec(date);
 saveName    =strcat(dataSaveDir,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'_128x128');
 
-save(saveName,'acc*','jac*')    
+%save(saveName,'acc*','jac*')    
  %%
 figure
 subplot(221)
