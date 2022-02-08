@@ -109,3 +109,5 @@ opts                = trainingOptions(typeEncoder, ...
     'MiniBatchSize',64);
 % Train U-Net
 net2                = trainNetwork(trainingData,lgraph,opts);
+%%
+%  save Unet_2022_02_09  net2
