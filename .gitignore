@@ -6,3 +6,4 @@ CODE/HelaUnetResults_2GT.asv
 CODE/Figures_GT_multinuclei.asv
 CODE/trainingLabels_4c_128/*.png
 CODE/trainingImages_4c_128/*.png
+CODE/segmentationHeLaUnet_8000x8000.asv
