@@ -49,7 +49,7 @@ numSlices       = numel(dirGT_multi);
 
 %% Load U-Net definition and training
 numClasses                  = 4 ;
-load Unet_2022_02_02
+load Unet_36000_2022_02_02
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
 accuracy(numSlices)     =0;
