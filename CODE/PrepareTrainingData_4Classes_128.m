@@ -41,8 +41,20 @@ dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
   [rows,cols]         = size(currentData);
 
  %%
+% Strategy 1 
+% patches from slices 101:2:180 = 40 slices, patches
+% are 128x128 with 50 overlap, thus for each slice there are 30x30 patches,
+% 900 x 40 = 36,000 
+
+% Strategy 2
+% patches from slices 1:2:300 = 150 slices, patches
+% are 128x128 with 50 overlap, thus for each slice there are 30x30 patches,
+% 900 x 150 = 135,000 
+
+ 
 sizeTrainingPatch       = 128;
-for currentSlice        = 101:2:180
+%for currentSlice        = 101:2:180
+for currentSlice        = 181:2:300
     disp(currentSlice)
     
     % read a slice and its hand-segmented boundary
