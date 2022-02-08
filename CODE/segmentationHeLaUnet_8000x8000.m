@@ -48,7 +48,12 @@ numSlices       = numel(dirData);
 
 %% Load U-Net definition and training
 numClasses                  = 4 ;
-load Unet_2022_02_02
+% net2 has been trained with 36,000 patches from slices 101:2:180 = 40 slices, patches
+% are 128x128 with 50 overlap, thus for each slice there are 30x30 patches,
+% 900 x 40 = 36,000
+load Unet_36000_2022_02_02
+
+
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
 accuracy(numSlices)     =0;
