@@ -48,8 +48,16 @@ hold off
 close(figure(3))
 
 %%
-load Results_Seg_Unet_Hela_multinuclei_2022_02_04
-load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE\Results\accuracy_2022_2_4_128x128.mat')
+%load Results_Seg_Unet_Hela_multinuclei_2022_02_04
+load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE\Results\accuracy_2022_2_9_128x128_135000.mat')
+accuracy1_135 = accuracy1;
+accuracy2_135 = accuracy2;
+accuracy3_135 = accuracy3;
+jaccard1_135  = jaccard1;
+jaccard2_135  = jaccard2;
+jaccard3_135  = jaccard3;
+
+load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa_Segmentation_UNET2\CODE\Results\accuracy_2022_2_4_128x128_36000.mat')
 
 
 %%
@@ -82,16 +90,15 @@ load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\He
 
 x2 = [1:19 x1 266:300];
 a_ImPr2 = [ones(1,19) a_ImPr ones(1,35)];
-h7 =figure(17);
+h7 =figure(11);
 cla
 %h21=subplot(121);
 h111=gca;
 hold on
 hp11=plot(1:300, accuracy1,'linewidth',2,'color',[0 0.56448 1]);
-hp12=plot(1:300, accuracy2,'linestyle',':','linewidth',1,'color',[1 0 0]);
-hp13=plot(1:300, accuracy3,'linestyle','-','linewidth',2,'color',[0 0.6 0]);
-
-hp4=plot(x2,a_ImPr2,'k','linestyle','--','linewidth',1);
+hp12=plot(1:300, accuracy3,'linestyle',':','linewidth',1,'color',[1 0 0]);
+hp13=plot(1:300, accuracy3_135,'linestyle','-','linewidth',2,'color',[0 0.6 0]);
+hp4 =plot(x2,a_ImPr2,'k','linestyle','--','linewidth',1);
 hold off
 
 
@@ -108,14 +115,14 @@ h111.Position=[0.07 0.18 0.91 0.77];
 filename = 'Fig_CompareUnet_Algorithms_2022_02_04_Accuracy.png';
 
 %%
-h8 =figure(18);
+h8 =figure(28);
 cla
 h222=gca;
 %h22=subplot(122);
 hold on
 hp21=plot(1:300,jaccard1,'linewidth',2,'color',[0 0.56448 1]);
-hp22=plot(1:300,jaccard2,'linestyle',':','linewidth',1,'color',[1 0 0]);
-hp23=plot(1:300,jaccard3,'linewidth',2,'color',[0 0.6 0]);
+hp22=plot(1:300,jaccard3,'linestyle',':','linewidth',1,'color',[1 0 0]);
+hp23=plot(1:300,jaccard3_135,'linewidth',2,'color',[0 0.6 0]);
 
 hp27=plot(x2,j_ImPr,'k','linestyle','--','linewidth',1);
 hold off
