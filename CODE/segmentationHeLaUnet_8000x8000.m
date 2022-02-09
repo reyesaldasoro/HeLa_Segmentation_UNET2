@@ -51,19 +51,19 @@ numClasses                  = 4 ;
 % net2 has been trained with 36,000 patches from slices 101:2:180 = 40 slices, patches
 % are 128x128 with 50 overlap, thus for each slice there are 30x30 patches,
 % 900 x 40 = 36,000
-load Unet_36000_2022_02_02
+%load Unet_36000_2022_02_02
+load Unet_135000_2022_02_09
 
-
-%% Run segmentation in all slices
-% Once the U-Net has been trained, segmentation is performed here:
-accuracy(numSlices)     =0;
-accuracy1(numSlices)    =0;
-accuracy2(numSlices)    =0;
-accuracy3(numSlices)    =0;
-jaccard1(numSlices)     =0;
-jaccard2(numSlices)     =0;
-jaccard3(numSlices)     =0;
-
+% % Run segmentation in all slices
+% % Once the U-Net has been trained, segmentation is performed here:
+% accuracy(numSlices)     =0;
+% accuracy1(numSlices)    =0;
+% accuracy2(numSlices)    =0;
+% accuracy3(numSlices)    =0;
+% jaccard1(numSlices)     =0;
+% jaccard2(numSlices)     =0;
+% jaccard3(numSlices)     =0;
+% 
 %%
 for  currentSlice        =330% 1:numSlices 
     disp(currentSlice)
