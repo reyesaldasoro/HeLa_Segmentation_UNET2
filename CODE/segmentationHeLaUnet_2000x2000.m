@@ -49,8 +49,8 @@ numSlices       = numel(dirGT_multi);
 
 %% Load U-Net definition and training
 numClasses                  = 4 ;
-%load Unet_36000_2022_02_02
-load Unet_135000_2022_02_09
+load Unet_36000_2022_02_02
+%load Unet_135000_2022_02_09
 
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
@@ -63,7 +63,7 @@ jaccard2(numSlices)     =0;
 jaccard3(numSlices)     =0;
 
 %%
-for  currentSlice        = 1:numSlices 
+for  currentSlice        =  61% 1:numSlices 
     disp(currentSlice)
     %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -149,9 +149,20 @@ colormap jet
 figure
 currentdataF     = imfilter(currentData,gaussF(3,3,1),'replicate');
 resultRGB        = zeros(rows,cols,3);
-resultRGB(:,:,1) = currentdataF;
-resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.5*resultRGB(:,:,1).*(new_result==2);
-resultRGB(:,:,3) = resultRGB(:,:,1);
-resultRGB(:,:,1) = resultRGB(:,:,1).*(new_result~=4)-0.8*resultRGB(:,:,1).*(new_result==4);
+% cyan background / purple nucleus
+% resultRGB(:,:,1) = currentdataF;
+% resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.5*resultRGB(:,:,1).*(new_result==2);
+% resultRGB(:,:,3) = resultRGB(:,:,1);
+% resultRGB(:,:,1) = resultRGB(:,:,1).*(new_result~=4)-0.8*resultRGB(:,:,1).*(new_result==4);
+
+
+  % orange cell / gray background / green nucleus / blue NE
+nuclearEnvelope = imdilate(new_result==1,ones(9));
+
+resultRGB(:,:,1) = currentdataF+50*uint8(new_result==3).*uint8(1-nuclearEnvelope);
+resultRGB(:,:,2) = currentdataF+50*uint8(new_result==2).*uint8(1-nuclearEnvelope);
+resultRGB(:,:,3) = currentdataF+50*uint8(nuclearEnvelope);
+
+
 
 imagesc(resultRGB/255)
