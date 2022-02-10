@@ -138,24 +138,25 @@ end
 %saveName    =strcat(dataSaveDir,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'_128x128');
 
 %save(saveName,'acc*','jac*')    
- %%
-% figure
-% subplot(221)
-% imagesc(repmat(dataF,[1 1 3]))
-% subplot(222)
-% imagesc(groundTruth_multi)
-% subplot(223) 
-% imagesc(result)
-% subplot(224)
-% imagesc(new_result)
-% colormap jet
+
 %%
 figure
 currentdataF     = imfilter(currentData,gaussF(3,3,1),'replicate');
 resultRGB        = zeros(rows,cols,3);
-resultRGB(:,:,1) = currentdataF;
-resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.5*resultRGB(:,:,1).*(new_result==2);
-resultRGB(:,:,3) = resultRGB(:,:,1);
-resultRGB(:,:,1) = resultRGB(:,:,1).*(new_result~=4)-0.8*resultRGB(:,:,1).*(new_result==4);
+
+% cyan background / purple nucleus
+% resultRGB(:,:,1) = currentdataF;
+% resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.5*resultRGB(:,:,1).*(new_result==2);
+% resultRGB(:,:,3) = resultRGB(:,:,1);
+% resultRGB(:,:,1) = resultRGB(:,:,1).*(new_result~=3)+0.8*resultRGB(:,:,1).*(new_result==3);
+%resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.3*resultRGB(:,:,1).*(new_result==2);
+
+
+% orange cell / gray background / green nucleus / blue NE
+nuclearEnvelope = imdilate(new_result==1,ones(9));
+
+resultRGB(:,:,1) = currentdataF+50*uint8(new_result==3).*uint8(1-nuclearEnvelope);
+resultRGB(:,:,2) = currentdataF+50*uint8(new_result==2).*uint8(1-nuclearEnvelope);
+resultRGB(:,:,3) = currentdataF+50*uint8(nuclearEnvelope);
 
 imagesc(resultRGB/255)
