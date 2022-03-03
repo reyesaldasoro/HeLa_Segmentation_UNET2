@@ -1,11 +1,11 @@
 load('net_2020_06_24.mat')
 
-dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\Results';
-dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\';
-GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth\';
-baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET\CODE\GroundTruth_4c\';
+dataSaveDir = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\Results';
+dataSetDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\';
+GTDir =  'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth\';
+baseDirSeg              = 'D:\Acad\GitHub\HeLa_Segmentation_UNET2\CODE\GroundTruth_4c\';
 dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
-
+%%
 
 currentSlice        = 100;
 currentData         = imread(strcat('D:\OneDrive - City, University of London\Acad\AlanTuringStudyGroup\Crick_Data\ROI_1656-6756-329\ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
