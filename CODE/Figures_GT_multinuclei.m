@@ -36,10 +36,12 @@ end
 
 %% load results algorithm
 load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\HeLa-Cell-Segmentation\Code\Results_ROI_1656_6756_329_2021_03_09.mat')
-%% load results multinuclei Unet
+%% load results multinuclei Unet This is the earlier training U-Net
 %load('Results_Unet_Hela_multinuclei_2021_08_26.mat')
 %clear j_* ja* ac* a_*
-load('Results_Seg_Unet_Hela_multinuclei_2021_09_16')
+% load('Results_Seg_Unet_Hela_multinuclei_2021_09_16')
+%% Recent U-Net training multinuclei
+load('Results_Seg_Unet_Hela_multinuclei_2022_03_03_36000')
 
 %%
 numClasses                  = 4 ;
@@ -71,7 +73,7 @@ structEl3                        = strel('disk',5);
 %load('UNet_128x128_Hela.mat')
 centreCell                      = zeros(rows,cols);
 centreCell(450:1400,350:1400)   = 1;
-for slicesT = 251%[48 71 82 170 215 251]  %:numSlices 
+for slicesT = 118%[48 71 82 170 215 251]  %:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -102,12 +104,12 @@ for slicesT = 251%[48 71 82 170 215 251]  %:numSlices
             AI_RGB(AI_RGB<0)=0;
             
             AI_RGB2(:,:,1) = imfilter(currentData,fspecial('Gaussian',3,1),'replicate');
-            AI_RGB2(:,:,2) = AI_RGB2(:,:,1)+60*uint8(result_Unet_filt(:,:,currentSlice));
+            AI_RGB2(:,:,2) = AI_RGB2(:,:,1)+60*uint8(result_Unet_filt(:,:,currentSlice)==2);
             AI_RGB2(:,:,3) = AI_RGB2(:,:,1);
             AI_RGB2(AI_RGB2>255)=255;
             AI_RGB2(AI_RGB2<0)=0;
             %imagesc((groundTruth==2)+(groundTruth2==2))
-  h1 =figure(1);
+  h1 =figure(2);
   h241=subplot(2,4,1);
             imagesc(GT_RGB)
   h242=subplot(2,4,2);
@@ -123,7 +125,7 @@ for slicesT = 251%[48 71 82 170 215 251]  %:numSlices
   h247=subplot(2,4,7);
              imagesc(-double(result_Unet(:,:,currentSlice)==2)+2*(groundTruth2==2))
   h248=subplot(2,4,8);
-             imagesc(-double(result_Unet_filt(:,:,currentSlice))+2*(groundTruth2==2))
+             imagesc(-double(result_Unet_filt(:,:,currentSlice)==2)+2*(groundTruth2==2))
                   colormap gray
             %             figure(1)
 %             imagesc(GT_RGB)
@@ -173,4 +175,4 @@ h246.Title.FontSize=fSize; h246.Title.String='(f)';
 h247.Title.FontSize=fSize; h247.Title.String='(g)';
 h248.Title.FontSize=fSize; h248.Title.String='(h)';
 
-filename = strcat('Hela_segmentation_multinuclei_accuracy_',num2str(slicesT),'.png');
+filename = strcat('Hela_segmentation_multinuclei_accuracy_2022_03_03_',num2str(slicesT),'.png');
