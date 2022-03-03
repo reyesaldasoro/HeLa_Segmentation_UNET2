@@ -49,8 +49,8 @@ numSlices       = numel(dirGT_multi);
 
 %% Load U-Net definition and training
 numClasses                  = 4 ;
-load Unet_36000_2022_02_02
-%load Unet_135000_2022_02_09
+%load Unet_36000_2022_02_02
+load Unet_135000_2022_02_09
 
 %% Run segmentation in all slices
 % Once the U-Net has been trained, segmentation is performed here:
@@ -63,7 +63,7 @@ jaccard2(numSlices)     =0;
 jaccard3(numSlices)     =0;
 
 %%
-for  currentSlice        =  61% 1:numSlices 
+for  currentSlice        =  1:numSlices 
     disp(currentSlice)
     %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -127,9 +127,12 @@ for  currentSlice        =  61% 1:numSlices
 
     % accuracy(currentSlice)         = sum(sum(new_result==groundTruth_multi))/rows/cols;   
      
-     
+    result_Unet(:,:,currentSlice)   = result;
+    result_Unet_filt(:,:,currentSlice) = new_result;
     %save(strcat(dataSaveDir,filesep,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'128x128_raw_LPF'),'accuracy','jaccard')   
 end
+
+%%
 timeSaved= datevec(date);
 saveName    =strcat(dataSaveDir,'accuracy','_',num2str(timeSaved(1)),'_',num2str(timeSaved(2)),'_',num2str(timeSaved(3)),'_128x128');
 %save('Results_Seg_Unet_Hela_multinuclei_2022_02_04','result','new_result','acc*','jac*')
