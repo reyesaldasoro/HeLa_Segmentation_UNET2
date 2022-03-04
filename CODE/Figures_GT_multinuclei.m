@@ -41,7 +41,8 @@ load('C:\Users\sbbk034\OneDrive - City, University of London\Documents\GitHub\He
 %clear j_* ja* ac* a_*
 % load('Results_Seg_Unet_Hela_multinuclei_2021_09_16')
 %% Recent U-Net training multinuclei
-load('Results_Seg_Unet_Hela_multinuclei_2022_03_03_36000')
+%load('Results_Seg_Unet_Hela_multinuclei_2022_03_03_36000')
+load('Results_Seg_Unet_Hela_multinuclei_2022_03_03_135000')
 
 %%
 numClasses                  = 4 ;
@@ -73,7 +74,7 @@ structEl3                        = strel('disk',5);
 %load('UNet_128x128_Hela.mat')
 centreCell                      = zeros(rows,cols);
 centreCell(450:1400,350:1400)   = 1;
-for slicesT = 118%[48 71 82 170 215 251]  %:numSlices 
+for slicesT = 151 %[48 71 82 170 215 251]  %:numSlices 
     currentSlice        = slicesToSegment(slicesT); %260% 1:300
     disp(currentSlice)
             currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
@@ -175,4 +176,4 @@ h246.Title.FontSize=fSize; h246.Title.String='(f)';
 h247.Title.FontSize=fSize; h247.Title.String='(g)';
 h248.Title.FontSize=fSize; h248.Title.String='(h)';
 
-filename = strcat('Hela_segmentation_multinuclei_accuracy_2022_03_03_',num2str(slicesT),'.png');
+filename = strcat('Hela_segmentation_multinuclei_accuracy_2022_03_03_135000_',num2str(slicesT),'.png');
