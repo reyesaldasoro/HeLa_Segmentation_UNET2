@@ -51,9 +51,21 @@ numSlices       = numel(dirGT_multi);
 currentSlice=330;
 Hela8000 = imread(strcat(dir0_8000,dir_8000(currentSlice).name));
 imagesc(imfilter(Hela8000,gaussF(5,5,1),'replicate'))
-axis([1 7000 4000 7400 ])
- set(gca,'position',[0 0 1 1 ]);axis off
 colormap gray
+set(gca,'position',[0 0 1 1 ]);axis off
+
+%%
+axis([1 7000 4000 7400 ])
 
 set(gcf,'Position',[50 150 789 341])
+%%
 print('-dpng','-r400','Fig_1_MIUA_2022.png')
+%%
+set(gcf,'Position',[50 50 700 700])
+axis([1 8000 1 8000 ])
+%%
+hbox = annotation(gcf,'rectangle',...
+    [0 0.1 0.912142857142857 0.355428571428571]);
+
+%%
+hbox.Position = [0  (8000-1000)/8000  (8000-1000)/8000  ]
