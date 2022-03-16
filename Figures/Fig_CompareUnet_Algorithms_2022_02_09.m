@@ -146,10 +146,10 @@ filename = 'Fig_CompareUnet_Algorithms_2022_02_09_Jaccard.png';
 
 %% 
  
- range = 150:200;
+ range = 60:150;
 
-[mean(jaccard1(range)) mean(jaccard2(range)) mean(jaccard3(range)) mean(j_ImPr(range))]
-[mean(accuracy1(range)) mean(accuracy2(range)) mean(accuracy3(range)) mean(a_ImPr2(range))]
+[mean(jaccard1(range)) mean(jaccard3(range)) mean(jaccard3_135(range)) mean(j_ImPr(range))]
+[mean(accuracy1(range)) mean(accuracy3(range)) mean(accuracy3_135(range)) mean(a_ImPr2(range))]
 %%
  
 %
