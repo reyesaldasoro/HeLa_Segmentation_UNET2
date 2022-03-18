@@ -64,26 +64,27 @@ print('-dpng','-r400','Fig_1_MIUA_2022.png')
 set(gcf,'Position',[50 50 700 700])
 axis([1 8000 1 8000 ])
 %%
-hbox = annotation(gcf,'rectangle',...
-    [0 0.1 0.912142857142857 0.355428571428571]);
 
 %%
 
 print('-dpng','-r400','Fig_0_MIUA_2022.png')
 
 %%
-hbox.Position = [ 0.0912    0.0041    0.2857    0.4924 ];
+hbox = annotation(gcf,'rectangle',...
+    [0 0.1 0.912142857142857 0.355428571428571]);
+hbox.Position = [25/8000  (8000-7400)/8000  (8000-1000)/8000 (7400-4000)/8000  ];
+hbox.Color = [1 0 0];
+hbox.LineWidth=3;
+
 hbox.Color = [0 0 1];
-print('-dpng','-r400','Fig_1B_MIUA_2022.png')
+%print('-dpng','-r400','Fig_1B_MIUA_2022.png')
 
 
-%%
+
 
 set(gcf,'Position',[50 50 700 700])
 axis([1 8000 1 8000 ])
-hbox.Position = [0  (8000-7400)/8000  (8000-1000)/8000 (7400-4000)/8000  ];
-hbox.Color = [1 0 0];
-hbox.LineWidth=3;
+
 
 hbox2 = annotation(gcf,'rectangle',...
     [0.0774    0.0477    0.2389    0.2343]);
@@ -91,4 +92,4 @@ hbox2.Color = [0 0 1];
 hbox2.LineWidth=2;
 hbox2.LineStyle='-.';
 
-print('-dpng','-r400','Fig_1C_MIUA_2022.png')
+print('-dpng','-r400','Fig_1D_MIUA_2022.png')
