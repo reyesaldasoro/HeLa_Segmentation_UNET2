@@ -23,7 +23,7 @@ j_vgg=h2.Children(3).YData;
 j_ImPr=h2.Children(4).YData;
 
 %
-close(figure(1))
+%close(figure(1))
 %
 %x1=1:numel(a1);
 %x2=1:numel(j1);
@@ -34,7 +34,7 @@ hp2=plot(x1,a_res,'r-');
 hp3=plot(x1,a_vgg,'-','color',[1 1 1]*0.4);
 hp4=plot(x1,a_ImPr,'k','linewidth',2);
 hold off
-close(figure(2))
+%close(figure(2))
 %
 figure(3)
 %plot(x2,j1,x2,j2,x2,j3,x2,j4)
@@ -45,7 +45,7 @@ hp3=plot(x2,j_vgg,'-','color',[1 1 1]*0.4);
 hp4=plot(x2,j_ImPr,'k','linewidth',2);
 hold off
 
-close(figure(3))
+%close(figure(3))
 
 %%
 %load Results_Seg_Unet_Hela_multinuclei_2022_02_04
