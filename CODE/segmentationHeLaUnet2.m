@@ -84,7 +84,7 @@ numClasses                  = 4 ;
 % classNames = ["T1","T2","T3","T4","T5"];
 clear classNames
 for counterClass=1:numClasses
-    classNames2(counterClass) = strcat("T",num2str(counterClass));
+    classNames(counterClass) = strcat("T",num2str(counterClass));
 end
 % The labels are simply the numbers of the textures, same numbers
 % as with the classNames. For randen examples, these vary 1-5, 1-16, 1-10
