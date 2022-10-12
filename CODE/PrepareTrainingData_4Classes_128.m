@@ -54,7 +54,7 @@ dirSeg                  = dir(strcat(baseDirSeg,'*.mat'));
  
 sizeTrainingPatch       = 128;
 %for currentSlice        = 101:2:180
-for currentSlice        = 181:2:300
+for currentSlice        = 1:2:300
     disp(currentSlice)
     
     % read a slice and its hand-segmented boundary
