@@ -45,9 +45,15 @@ numSlices       = numel(dirGT);
 %% Training data and labels
 % location of the training data data and labels are stored as pairs of textures arranged in Horizontal,
 % Vertical and Diagonal pairs of class 1-2, 1-3, 1-4 ... 2-1, 2-3,...
-imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
-labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
+imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128_plus_8000',filesep));
+labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128_plus_8000',filesep));
 sizeTrainingPatch           = 128;
+
+
+
+% imageDir                    = fullfile(dataSetDir,strcat('trainingImages_4c_128',filesep));
+% labelDir                    = fullfile(dataSetDir,strcat('trainingLabels_4c_128',filesep));
+% sizeTrainingPatch           = 128;
 
 %imageDir                   = fullfile(dataSetDir,strcat('trainingImages_4c',filesep));
 %labelDir                   = fullfile(dataSetDir,strcat('trainingLabels_4c',filesep));
@@ -110,4 +116,5 @@ opts                = trainingOptions(typeEncoder, ...
 % Train U-Net
 net2                = trainNetwork(trainingData,lgraph,opts);
 %%
+save Unet_135000_ImProc_2023_01_24 net2
 %  save Unet_135000_2022_02_09  net2
