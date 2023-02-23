@@ -56,7 +56,7 @@ axis([1 7000 4000 7400 ])
 colormap gray
 
 set(gcf,'Position',[50 150 789 341])
-print('-dpng','-r400','Result_8000_330_raw_2022_03_03_B.png')
+%print('-dpng','-r400','Result_8000_330_raw_2022_03_03_B.png')
 %% 
 % 151 == 330 
 testSlices = [48 71 151  215 251];  %  82170
