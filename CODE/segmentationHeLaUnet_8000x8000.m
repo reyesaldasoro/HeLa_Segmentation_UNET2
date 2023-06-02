@@ -58,7 +58,7 @@ numClasses                  = 4 ;
 % net2 has been trained with 36,000 patches from slices 1:2:300 = 150 slices, patches
 % are 128x128 with 50 overlap, thus for each slice there are 30x30 = 900 patches,
 % 900 x 150 = 135,000
-%load Unet_135000_2022_02_09
+load Unet_135000_2022_02_09
 
 % ----- Strategy 3 ------
 % In addition to the previous   135,000 patches, another 135,000 were
@@ -70,7 +70,7 @@ numClasses                  = 4 ;
 % take only the  135,000 that were
 % generated automatically from the 8000 slices with the algorithm for a
 % WITHOUT the original 135,000
-load Unet_135000_ImProc_2023_01_24
+%load Unet_135000_ImProc_2023_01_24
 
 
 %%
