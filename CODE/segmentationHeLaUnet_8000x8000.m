@@ -74,7 +74,7 @@ load Unet_135000_2022_02_09
 
 
 %%
-currentSlice        =330;% 1:numSlices 
+currentSlice        =130;% 1:numSlices 
     disp(currentSlice)
     %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
     currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
