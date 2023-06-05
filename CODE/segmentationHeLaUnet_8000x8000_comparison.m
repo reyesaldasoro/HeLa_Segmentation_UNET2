@@ -115,92 +115,108 @@ for k = 1:numGTSlices
     figure(k)
     imagesc(resultRGB)
 
-    results_Slices{k}                       = resultRGB;   
+    results_Slices{k,1}                       = resultRGB;   
+    results_Slices{k,2}                       = sum(sum( ((GT>0)==(new_result==2)) ))/rows/cols;   
+    results_Slices{k,3}                       = sum(sum( ((GT>0)+(new_result==2))==2 ))/sum(sum( ((GT>0)+(new_result==2))>0));   
 
 
 
 
 end
 %%
-figure
-currentdataF     = imfilter(currentData,gaussF(3,3,1),'replicate');
-resultRGB        = zeros(rows,cols,3);
-
-% cyan background / purple nucleus
-% resultRGB(:,:,1) = currentdataF;
-% resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.5*resultRGB(:,:,1).*(new_result==2);
-% resultRGB(:,:,3) = resultRGB(:,:,1);
-% resultRGB(:,:,1) = resultRGB(:,:,1).*(new_result~=3)+0.8*resultRGB(:,:,1).*(new_result==3);
-%resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.3*resultRGB(:,:,1).*(new_result==2);
+filename = 'Hela_Slice_030_GT_UNet.jpg';
+filename = 'Hela_Slice_030_GT_UNet.png';
+h1=gcf;
+h1.Position=[100 100 850 700];
+filename = 'Hela_Slice_130_GT_UNet.png';
+h1=gcf;
+h1.Position=[100 100 850 700];
+filename = 'Hela_Slice_330_GT_UNet.png';
 
 
-% orange cell / gray background / green nucleus / blue NE
-nuclearEnvelope = imdilate(new_result==1,ones(9));
 
-resultRGB(:,:,1) = currentdataF+50*uint8(new_result==3).*uint8(1-nuclearEnvelope);
-resultRGB(:,:,2) = currentdataF+50*uint8(new_result==2).*uint8(1-nuclearEnvelope);
-resultRGB(:,:,3) = currentdataF+50*uint8(nuclearEnvelope);
 
-imagesc(resultRGB/255)
-%%
-
-h0 = gcf;
-h1 = gca;
-h1.Position=[0 0 1 1];
-h0.Position= [180    270    1000    450];
-axis([1 7000 4000 7400])
-axis off
-%%
-%filename = 'Figures/Result_8000_330_Unet_270000_2022_10_19.png';
-%filename = 'Figures/Result_8000_330_Unet_135000_2022_10_19.png';
-%filename = 'Figures/Result_8000_330_Unet_36000_2022_10_19.png';
-filename = 'Figures/Result_8000_330_Unet_135000ImProc_2023_01_25.png';
-
-print('-dpng','-r400',filename)
-
-%% Figure to illustrate post-processing
-h1=figure;
-h1.Position =[  65.8000  353.0000  754.4000  300.0000];
-
-h241=subplot(141);
-imagesc(imfilter(currentData,gaussF(3,3,1)))
-axis([1600 3200 3700 5600 ])
-h242=subplot(142);
-imagesc(result)
-axis([1600 3200 3700 5600 ])
-h243=subplot(143);
-imagesc(new_result)
-axis([1600 3200 3700 5600 ])
-h244=subplot(144);
-imagesc(result==new_result)
-axis([1600 3200 3700 5600 ])
-
-colormap gray
-fSize   = 14;
-
-h241.Title.FontSize=fSize; h241.Title.String='(a)';
-h242.Title.FontSize=fSize; h242.Title.String='(b)';
-h243.Title.FontSize=fSize; h243.Title.String='(c)';
-h244.Title.FontSize=fSize; h244.Title.String='(d)';
-%
-hW      = 0.90;
-hH      = 0.235;
-hBase   = 0.02;
-hBase2  = 0.02;
-h241.Position = [0.01 hBase2 hH hW];h241.XTick=[];h241.YTick=[];
-h242.Position = [0.26 hBase2 hH hW];h242.XTick=[];h242.YTick=[];
-h243.Position = [0.51 hBase2 hH hW];h243.XTick=[];h243.YTick=[];
-h244.Position = [0.76 hBase2 hH hW];h244.XTick=[];h244.YTick=[];
-%
-rr1 = 3100;
-rr2 = 4200;
-cc1 =  800;
-cc2 = 1800;
-h241.XLim= [cc1        cc2]; h241.YLim= [rr1        rr2];
-h242.XLim= [cc1        cc2]; h242.YLim= [rr1        rr2];
-h243.XLim= [cc1        cc2]; h243.YLim= [rr1        rr2];
-h244.XLim= [cc1        cc2]; h244.YLim= [rr1        rr2];
 
 %%
-filename = 'Figures/PostProcessing_Unet_270000_2022_10_19.png';
-print('-dpng','-r400',filename)
+% figure
+% currentdataF     = imfilter(currentData,gaussF(3,3,1),'replicate');
+% resultRGB        = zeros(rows,cols,3);
+% 
+% % cyan background / purple nucleus
+% % resultRGB(:,:,1) = currentdataF;
+% % resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.5*resultRGB(:,:,1).*(new_result==2);
+% % resultRGB(:,:,3) = resultRGB(:,:,1);
+% % resultRGB(:,:,1) = resultRGB(:,:,1).*(new_result~=3)+0.8*resultRGB(:,:,1).*(new_result==3);
+% %resultRGB(:,:,2) = resultRGB(:,:,1).*(new_result~=2)+0.3*resultRGB(:,:,1).*(new_result==2);
+% 
+% 
+% % orange cell / gray background / green nucleus / blue NE
+% nuclearEnvelope = imdilate(new_result==1,ones(9));
+% 
+% resultRGB(:,:,1) = currentdataF+50*uint8(new_result==3).*uint8(1-nuclearEnvelope);
+% resultRGB(:,:,2) = currentdataF+50*uint8(new_result==2).*uint8(1-nuclearEnvelope);
+% resultRGB(:,:,3) = currentdataF+50*uint8(nuclearEnvelope);
+% 
+% imagesc(resultRGB/255)
+% %%
+% 
+% h0 = gcf;
+% h1 = gca;
+% h1.Position=[0 0 1 1];
+% h0.Position= [180    270    1000    450];
+% axis([1 7000 4000 7400])
+% axis off
+% %%
+% %filename = 'Figures/Result_8000_330_Unet_270000_2022_10_19.png';
+% %filename = 'Figures/Result_8000_330_Unet_135000_2022_10_19.png';
+% %filename = 'Figures/Result_8000_330_Unet_36000_2022_10_19.png';
+% filename = 'Figures/Result_8000_330_Unet_135000ImProc_2023_01_25.png';
+% 
+% print('-dpng','-r400',filename)
+% 
+% %% Figure to illustrate post-processing
+% h1=figure;
+% h1.Position =[  65.8000  353.0000  754.4000  300.0000];
+% 
+% h241=subplot(141);
+% imagesc(imfilter(currentData,gaussF(3,3,1)))
+% axis([1600 3200 3700 5600 ])
+% h242=subplot(142);
+% imagesc(result)
+% axis([1600 3200 3700 5600 ])
+% h243=subplot(143);
+% imagesc(new_result)
+% axis([1600 3200 3700 5600 ])
+% h244=subplot(144);
+% imagesc(result==new_result)
+% axis([1600 3200 3700 5600 ])
+% 
+% colormap gray
+% fSize   = 14;
+% 
+% h241.Title.FontSize=fSize; h241.Title.String='(a)';
+% h242.Title.FontSize=fSize; h242.Title.String='(b)';
+% h243.Title.FontSize=fSize; h243.Title.String='(c)';
+% h244.Title.FontSize=fSize; h244.Title.String='(d)';
+% %
+% hW      = 0.90;
+% hH      = 0.235;
+% hBase   = 0.02;
+% hBase2  = 0.02;
+% h241.Position = [0.01 hBase2 hH hW];h241.XTick=[];h241.YTick=[];
+% h242.Position = [0.26 hBase2 hH hW];h242.XTick=[];h242.YTick=[];
+% h243.Position = [0.51 hBase2 hH hW];h243.XTick=[];h243.YTick=[];
+% h244.Position = [0.76 hBase2 hH hW];h244.XTick=[];h244.YTick=[];
+% %
+% rr1 = 3100;
+% rr2 = 4200;
+% cc1 =  800;
+% cc2 = 1800;
+% h241.XLim= [cc1        cc2]; h241.YLim= [rr1        rr2];
+% h242.XLim= [cc1        cc2]; h242.YLim= [rr1        rr2];
+% h243.XLim= [cc1        cc2]; h243.YLim= [rr1        rr2];
+% h244.XLim= [cc1        cc2]; h244.YLim= [rr1        rr2];
+% 
+% %%
+% filename = 'Figures/PostProcessing_Unet_270000_2022_10_19.png';
+% print('-dpng','-r400',filename)
