@@ -45,84 +45,159 @@ end
 
 numSlices       = numel(dirData);
 numGTSlices     = numel(dirGT);
-
-%% Load U-Net definition and training
 numClasses                  = 4 ;
-% ----- Strategy 1 ------
-% net2 has been trained with 36,000 patches from slices 101:2:180 = 40 slices, patches
-% are 128x128 with 50 overlap, thus for each slice there are 30x30 = 900 patches,
-% 900 x 40 = 36,000
-%load Unet_36000_2022_02_02
-
-% ----- Strategy 2 ------
-% net2 has been trained with 36,000 patches from slices 1:2:300 = 150 slices, patches
-% are 128x128 with 50 overlap, thus for each slice there are 30x30 = 900 patches,
-% 900 x 150 = 135,000
-%load Unet_135000_2022_02_09
-
-% ----- Strategy 3 ------
-% In addition to the previous   135,000 patches, another 135,000 were
-% generated automatically from the 8000 slices with the algorithm for a
-% total of 270,000
-load Unet_270000_2022_10_17_B
-
-% ----- Strategy 4 ------
-% take only the  135,000 that were
-% generated automatically from the 8000 slices with the algorithm for a
-% WITHOUT the original 135,000
-%load Unet_135000_ImProc_2023_01_24
+%% Load U-Net definition and training
 
 
-%%
-for k = 1:numGTSlices
-    disp(k)
-    load(strcat(GTDir,dirGT(k).name));
-    currentSlice        =1+str2num(dirGT(k).name(12:14));% 1:numSlices 
+for currentStrategy= 1:4
+    if currentStrategy ==1
+        % ----- Strategy 1 ------
+        % net2 has been trained with 36,000 patches from slices 101:2:180 = 40 slices, patches
+        % are 128x128 with 50 overlap, thus for each slice there are 30x30 = 900 patches,
+        % 900 x 40 = 36,000
+        load Unet_36000_2022_02_02
+    elseif currentStrategy ==2
+        % ----- Strategy 2 ------
+        % net2 has been trained with 36,000 patches from slices 1:2:300 = 150 slices, patches
+        % are 128x128 with 50 overlap, thus for each slice there are 30x30 = 900 patches,
+        % 900 x 150 = 135,000
+        load Unet_135000_2022_02_09
+    elseif currentStrategy ==3
+        % ----- Strategy 3 ------
+        % take only the  135,000 that were
+        % generated automatically from the 8000 slices with the algorithm for a
+        % WITHOUT the original 135,000
+        load Unet_135000_ImProc_2023_01_24
+    elseif currentStrategy ==4
+        % ----- Strategy 4 ------
+        % In addition to the previous   135,000 patches, another 135,000 were
+        % generated automatically from the 8000 slices with the algorithm for a
+        % total of 270,000
+        load Unet_270000_2022_10_17_B
+    end
+    %
+    for k = 1:numGTSlices
+        disp([currentStrategy   k])
+        load(strcat(GTDir,dirGT(k).name));
+        currentSlice        =1+str2num(dirGT(k).name(12:14));% 1:numSlices
 
-    %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
-    currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
-    
-    [rows,cols]          = size(currentData);
-    % With low memory this can create errors, use the four  quadrants instead
-    dataF               = imfilter(currentData,gaussF(3,3,1),'replicate');
-    %segmentedData       = semanticseg(dataF,net2);   
-    % Segmentation in blocks
-    for cRows = 1:2048:rows
-        for cCols = 1:2048:cols
-            segmentedData(cRows:cRows+2048-1,cCols:cCols+2048-1) = semanticseg(dataF(cRows:cRows+2048-1,cCols:cCols+2048-1),net2);
+        %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
+        currentData         = imread(strcat(baseDirData,dirData(currentSlice).name));
+
+        [rows,cols]          = size(currentData);
+        % With low memory this can create errors, use the four  quadrants instead
+        dataF               = imfilter(currentData,gaussF(3,3,1),'replicate');
+        %segmentedData       = semanticseg(dataF,net2);
+        % Segmentation in blocks
+        for cRows = 1:2048:rows
+            for cCols = 1:2048:cols
+                segmentedData(cRows:cRows+2048-1,cCols:cCols+2048-1) = semanticseg(dataF(cRows:cRows+2048-1,cCols:cCols+2048-1),net2);
+            end
         end
+
+        % %%%%%% Intermediate display of results %%%%%%%
+        % segmentationAndData                   = labeloverlay(dataF, segmentedData);
+        % figure; imagesc(segmentationAndData)
+        % Convert from semantic to numeric to calculate jaccard and accuracy
+        % Result has the following classes:
+        % 1 - Nuclear Envelope, 2 - Nucleus, 3-Cell, 4 - Background
+        result               = zeros(rows,cols);
+        for counterClass=1:numClasses
+            result = result +(counterClass*(segmentedData==strcat('T',num2str(counterClass))));
+        end
+
+        % postProcess
+        new_result                      = postProcessHela(result);
+
+        resultRGB(:,:,1)                = dataF+150*uint8(GT~=(new_result==2));
+        resultRGB(:,:,2)                = dataF+50*uint8(GT);
+        resultRGB(:,:,3)                = dataF;
+
+        figure(k)
+        imagesc(resultRGB)
+
+        results_Slices{currentStrategy,k,1}                       = resultRGB;
+        results_Slices{currentStrategy,k,2}                       = sum(sum( ((GT>0)==(new_result==2)) ))/rows/cols;
+        results_Slices{currentStrategy,k,3}                       = sum(sum( ((GT>0)+(new_result==2))==2 ))/sum(sum( ((GT>0)+(new_result==2))>0));
+        results_Slices{currentStrategy,k,4}                       = 2*(GT>0)+(new_result==2);
+        
     end
-
-    % %%%%%% Intermediate display of results %%%%%%%
-    % segmentationAndData                   = labeloverlay(dataF, segmentedData);
-    % figure; imagesc(segmentationAndData)
-    % Convert from semantic to numeric to calculate jaccard and accuracy
-    % Result has the following classes:
-    % 1 - Nuclear Envelope, 2 - Nucleus, 3-Cell, 4 - Background
-    result               = zeros(rows,cols);
-    for counterClass=1:numClasses
-        result = result +(counterClass*(segmentedData==strcat('T',num2str(counterClass))));
-    end
-
-    
-    % postProcess
-    new_result                      = postProcessHela(result);
-
-    resultRGB(:,:,1)                = dataF+150*uint8(GT~=(new_result==2));
-    resultRGB(:,:,2)                = dataF+50*uint8(GT);
-    resultRGB(:,:,3)                = dataF;
-
-    figure(k)
-    imagesc(resultRGB)
-
-    results_Slices{k,1}                       = resultRGB;   
-    results_Slices{k,2}                       = sum(sum( ((GT>0)==(new_result==2)) ))/rows/cols;   
-    results_Slices{k,3}                       = sum(sum( ((GT>0)+(new_result==2))==2 ))/sum(sum( ((GT>0)+(new_result==2))>0));   
-
-
-
-
 end
+%% display composite image
+h1=figure;
+for k1=1:4
+    for k2=1:3
+        hs(k1,k2) = subplot(4,3,k2+(k1-1)*3);
+        imagesc(results_Slices{k1,k2,1})
+        title(strcat('Strat=',num2str(k1),', slice=',...
+            (dirGT(k2).name(12:14)),', A=',num2str(results_Slices{k1,k2,2},3) ,', JI=',num2str(results_Slices{k1,k2,3},3)),...
+            'FontSize',9)
+    end
+end
+
+h1.Position = [100 50 750 750];
+
+hHeightD    = 0.25;
+hWidth      = 0.28;
+hWidthD     = 0.33;
+hHeight     = 0.2;
+
+hs(1,1).Position = [0.0500    0.03+3*hHeightD    hWidth    hHeight];
+hs(2,1).Position = [0.0500    0.03+2*hHeightD    hWidth    hHeight];
+hs(3,1).Position = [0.0500    0.03+hHeightD      hWidth    hHeight];
+hs(4,1).Position = [0.0500    0.03               hWidth    hHeight];
+
+hs(1,2).Position = [0.0500+hWidthD    0.03+3*hHeightD    hWidth    hHeight];
+hs(2,2).Position = [0.0500+hWidthD    0.03+2*hHeightD    hWidth    hHeight];
+hs(3,2).Position = [0.0500+hWidthD    0.03+hHeightD      hWidth    hHeight];
+hs(4,2).Position = [0.0500+hWidthD    0.03               hWidth    hHeight];
+
+hs(1,3).Position = [0.0500+2*hWidthD    0.03+3*hHeightD    hWidth    hHeight];
+hs(2,3).Position = [0.0500+2*hWidthD    0.03+2*hHeightD    hWidth    hHeight];
+hs(3,3).Position = [0.0500+2*hWidthD    0.03+hHeightD      hWidth    hHeight];
+hs(4,3).Position = [0.0500+2*hWidthD    0.03               hWidth    hHeight];
+
+filename = 'GroundTruth_8000/FourUnetStrategies_composite.png';
+print('-dpng','-r400',filename)
+
+%% display error  image
+h1=figure;
+for k1=1:4
+    for k2=1:3
+        hs(k1,k2) = subplot(4,3,k2+(k1-1)*3);
+        imagesc(results_Slices{k1,k2,4})
+        title(strcat('Strat=',num2str(k1),', slice=',...
+            (dirGT(k2).name(12:14)),', A=',num2str(results_Slices{k1,k2,2},3) ,', JI=',num2str(results_Slices{k1,k2,3},3)),...
+            'FontSize',9)
+    end
+end
+
+h1.Position = [100 50 750 750];
+
+hHeightD    = 0.25;
+hWidth      = 0.28;
+hWidthD     = 0.33;
+hHeight     = 0.2;
+
+hs(1,1).Position = [0.0500    0.03+3*hHeightD    hWidth    hHeight];
+hs(2,1).Position = [0.0500    0.03+2*hHeightD    hWidth    hHeight];
+hs(3,1).Position = [0.0500    0.03+hHeightD      hWidth    hHeight];
+hs(4,1).Position = [0.0500    0.03               hWidth    hHeight];
+
+hs(1,2).Position = [0.0500+hWidthD    0.03+3*hHeightD    hWidth    hHeight];
+hs(2,2).Position = [0.0500+hWidthD    0.03+2*hHeightD    hWidth    hHeight];
+hs(3,2).Position = [0.0500+hWidthD    0.03+hHeightD      hWidth    hHeight];
+hs(4,2).Position = [0.0500+hWidthD    0.03               hWidth    hHeight];
+
+hs(1,3).Position = [0.0500+2*hWidthD    0.03+3*hHeightD    hWidth    hHeight];
+hs(2,3).Position = [0.0500+2*hWidthD    0.03+2*hHeightD    hWidth    hHeight];
+hs(3,3).Position = [0.0500+2*hWidthD    0.03+hHeightD      hWidth    hHeight];
+hs(4,3).Position = [0.0500+2*hWidthD    0.03               hWidth    hHeight];
+
+ jet2=jet;jet2(1,:) = 0; jet2(3,:)=1; colormap (jet2)
+filename = 'GroundTruth_8000/FourUnetStrategies_errors.png';
+print('-dpng','-r400',filename)
+
 %%
 filename = 'Hela_Slice_030_GT_UNet.jpg';
 filename = 'Hela_Slice_030_GT_UNet.png';
