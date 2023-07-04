@@ -79,6 +79,7 @@ for currentStrategy= 1:4
     for k = 1:numGTSlices
         disp([currentStrategy   k])
         load(strcat(GTDir,dirGT(k).name));
+        GT=(GT>0);
         currentSlice        =1+str2num(dirGT(k).name(12:14));% 1:numSlices
 
         %currentData         = imread(strcat(baseDirData,'ROI_1656-6756-329_z0',num2str(currentSlice),'.tiff'));
@@ -157,7 +158,7 @@ hs(2,3).Position = [0.0500+2*hWidthD    0.03+2*hHeightD    hWidth    hHeight];
 hs(3,3).Position = [0.0500+2*hWidthD    0.03+hHeightD      hWidth    hHeight];
 hs(4,3).Position = [0.0500+2*hWidthD    0.03               hWidth    hHeight];
 
-filename = 'GroundTruth_8000/FourUnetStrategies_composite.png';
+filename = 'GroundTruth_8000/FourUnetStrategies_composite_2023_29_06.png';
 print('-dpng','-r400',filename)
 
 %% display error  image
@@ -195,7 +196,7 @@ hs(3,3).Position = [0.0500+2*hWidthD    0.03+hHeightD      hWidth    hHeight];
 hs(4,3).Position = [0.0500+2*hWidthD    0.03               hWidth    hHeight];
 
  jet2=jet;jet2(1,:) = 0; jet2(3,:)=1; colormap (jet2)
-filename = 'GroundTruth_8000/FourUnetStrategies_errors.png';
+filename = 'GroundTruth_8000/FourUnetStrategies_errors_2023_29_06.png';
 print('-dpng','-r400',filename)
 
 %%
