@@ -27,3 +27,8 @@ CODE/Figures/Result_8000_330_Unet_135000_2022_10_19.fig
 CODE/Figures/Result_8000_330_Unet_270000_2022_10_19.fig
 CODE/Figures/Result_8000_330_Unet_36000_2022_10_19.fig
 CODE/quickDisplay_HeLa_tiff.asv
+CODE/GroundTruth_8000/ZHela_slice_0130_GT.tif
+CODE/GroundTruth_8000/ZHela_slice_130_GT.mat
+CODE/GroundTruth_8000/ZZHela_slice_030_GT.mat
+CODE/GroundTruth_8000/ZHela_slice_030_GT.mat
+CODE/GroundTruth_8000/ZZHela_slice_130_GT.mat
